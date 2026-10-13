@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-12",
+  "project": "C:\\Users\\25923\\Desktop\\Swarm-Rescue",
+  "source_sha256": "c476fcaa6b93a3142e4c54303597bab562268700f4d9411475d19d4dc74b1345",
+  "source_files": 147,
+  "source_matches_formal_v13_1": true,
+  "regression_tests_passed": 129,
+  "submission_check_passed": true,
+  "physics_smoke_steps": 120,
+  "main_doc_links_verified": 8,
+  "template_conversion_checked": true,
+  "registered_map_count": 8,
+  "current_version_replays": 8,
+  "historic_v4_replays": 15,
+  "new_desktop_full_round": {
+    "map": "Map01",
+    "layout": "historic",
+    "disposed": 10,
+    "score": 87.08,
+    "health": 91.8,
+    "steps": 1564,
+    "output": "results/v13_1_20261012_102857_003195/Map01_historic_seed12345"
+  }
+}

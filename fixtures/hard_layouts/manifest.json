@@ -1,0 +1,136 @@
+{
+  "fixed_layouts": [
+    {
+      "map": "Map01",
+      "scenario": "regression_sentinel",
+      "file": "Map01_regression_sentinel.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\hard_layouts\\Map01_regression_sentinel.json",
+      "sha256": "de58c189569c062c0c2b4163994fabd2acd12a4ac0eb74eff9bc4210de425dec",
+      "bombs": 10
+    },
+    {
+      "map": "Map02",
+      "scenario": "hard_v1",
+      "file": "Map02_hard_v1.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\hard_layouts\\Map02_hard_v1.json",
+      "sha256": "75610b542d90706de87340138a3f5e14ff7520c43f9c5317fed29d1ddf36b7d7",
+      "bombs": 10
+    },
+    {
+      "map": "Map02",
+      "scenario": "hard_v2",
+      "file": "Map02_hard_v2.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\hard_layouts\\Map02_hard_v2.json",
+      "sha256": "e021576c3bea8ec9e1eab303397e2f2b221234ca759fc7a6880471cf251865a5",
+      "bombs": 10
+    },
+    {
+      "map": "Map02",
+      "scenario": "hard_v3",
+      "file": "Map02_hard_v3.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\hard_layouts\\Map02_hard_v3.json",
+      "sha256": "4e7d0e11c5e22a543b047b16225778c2ed0b1edaad1e4bdf395311ae7c08b9c2",
+      "bombs": 10
+    },
+    {
+      "map": "Map03",
+      "scenario": "hard_v1",
+      "file": "Map03_hard_v1.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\hard_layouts\\Map03_hard_v1.json",
+      "sha256": "d63c266dc5fcedb20b1967b373bb43c0a80c552284053f805b4da0408b1f53fb",
+      "bombs": 10
+    },
+    {
+      "map": "Map03",
+      "scenario": "hard_v2",
+      "file": "Map03_hard_v2.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\hard_layouts\\Map03_hard_v2.json",
+      "sha256": "d8b919efb9cef1925a3a03fcaaea1297bdbb00dd3fd3d34ddeec7aab116eef95",
+      "bombs": 10
+    },
+    {
+      "map": "Map03",
+      "scenario": "hard_v3",
+      "file": "Map03_hard_v3.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\hard_layouts\\Map03_hard_v3.json",
+      "sha256": "13fec42f5459e3b0b27e9fc3d4c09950f7cbc1cc2d1e7deba6f8f37a6af0ccc2",
+      "bombs": 10
+    },
+    {
+      "map": "Map04",
+      "scenario": "hard_v1",
+      "file": "Map04_hard_v1.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\hard_layouts\\Map04_hard_v1.json",
+      "sha256": "19acb371db7ee34306f386d3dced8782bee44fa5e1e7eef267b09684bebd3c70",
+      "bombs": 10
+    },
+    {
+      "map": "Map04",
+      "scenario": "hard_v2",
+      "file": "Map04_hard_v2.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\hard_layouts\\Map04_hard_v2.json",
+      "sha256": "8bd7ca576a3a225d2dbfd384f1fb760f4d947be2ad29eb0903a2a16256cce67d",
+      "bombs": 10
+    },
+    {
+      "map": "Map04",
+      "scenario": "hard_v3",
+      "file": "Map04_hard_v3.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\hard_layouts\\Map04_hard_v3.json",
+      "sha256": "8e93a18232a136ef4966d03b93c5da715c10befd1f1bc9dcf7cae4d096e644b1",
+      "bombs": 10
+    },
+    {
+      "map": "Map05",
+      "scenario": "hard_v1",
+      "file": "Map05_hard_v1.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\hard_layouts\\Map05_hard_v1.json",
+      "sha256": "a1fe2cf389a1ff7c2603f4847b2b1afa4bf47132e41ae76d1f200cc42c2419f1",
+      "bombs": 10
+    },
+    {
+      "map": "Map05",
+      "scenario": "hard_v2",
+      "file": "Map05_hard_v2.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\hard_layouts\\Map05_hard_v2.json",
+      "sha256": "9b06d5036ffb222cdd3e2a2c5ed5664fed88caff006cf79b31226bde8a604dd4",
+      "bombs": 10
+    },
+    {
+      "map": "Map05",
+      "scenario": "hard_v3",
+      "file": "Map05_hard_v3.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\hard_layouts\\Map05_hard_v3.json",
+      "sha256": "c321499f719c10dcbc3b3dcc608afaca943170f4a80f256a776d1227bad5a0a3",
+      "bombs": 10
+    },
+    {
+      "map": "Map01",
+      "scenario": "edge_pairs_base",
+      "file": "Map01_edge_pairs_base.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\code---v5\\doc\\evaluation_v4_15_rerun_20261004_120037\\layouts\\Map01_edge_pairs.json",
+      "sha256": "9447143e10146a4b31451a2d74e12aea91e0267bd15e83394012709f3aaf217f",
+      "bombs": 10
+    },
+    {
+      "map": "Map01",
+      "scenario": "edge_pairs_offset1000",
+      "file": "Map01_edge_pairs_offset1000.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\baseline_multiseed_layouts_20261005\\offset_1000\\Map01_edge_pairs.json",
+      "sha256": "25176fe64d8912d93c084c2cef6158126afa5d7b921725cf3daf14fc24788327",
+      "bombs": 10
+    },
+    {
+      "map": "Map01",
+      "scenario": "edge_pairs_offset2000",
+      "file": "Map01_edge_pairs_offset2000.json",
+      "source": "C:\\Users\\wty\\OneDrive\\桌面\\新建文件夹\\研究生\\竞赛\\慧眼行动\\tmp\\baseline_multiseed_layouts_20261005\\offset_2000\\Map01_edge_pairs.json",
+      "sha256": "1844f94bb9cf4bd5d11f17d80e541a2a2c8de7920f1a28ce8d7f78875195b18c",
+      "bombs": 10
+    }
+  ],
+  "simulation_seeds": [
+    20261005,
+    314159
+  ]
+}

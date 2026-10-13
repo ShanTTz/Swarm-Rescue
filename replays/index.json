@@ -1,0 +1,232 @@
+[
+  {
+    "version": "v13_1",
+    "map": "Map01",
+    "layout": "historic",
+    "seed": 12345,
+    "score": 87.08,
+    "disposed": 10,
+    "path": "replays/v13_1/Map01_historic_seed12345.npz",
+    "sha256": "383c996b0470a781cdbbfd50f74a9a02dfe0604649da57efd505354bede28266"
+  },
+  {
+    "version": "v13_1",
+    "map": "Map01",
+    "layout": "stratified",
+    "seed": 12345,
+    "score": 77.78,
+    "disposed": 10,
+    "path": "replays/v13_1/Map01_stratified_seed12345.npz",
+    "sha256": "7dd8faa6e552276eb2c3e343fcf9261da84f334c6d1dfd4f4e5825ee1bedee75"
+  },
+  {
+    "version": "v13_1",
+    "map": "Map01",
+    "layout": "edge_pairs",
+    "seed": 12345,
+    "score": 81.72,
+    "disposed": 10,
+    "path": "replays/v13_1/Map01_edge_pairs_seed12345.npz",
+    "sha256": "4a22a40de83c4a6b5e72a72d9b531f25fcf328970717a7dbf33563a4a2578b2a"
+  },
+  {
+    "version": "v13_1",
+    "map": "Map02",
+    "layout": "historic",
+    "seed": 12345,
+    "score": 98.16,
+    "disposed": 10,
+    "path": "replays/v13_1/Map02_historic_seed12345.npz",
+    "sha256": "3c5f89e971d49d8022583922f7d1c56c11f3466cdfde013b80e2b6568d2db375"
+  },
+  {
+    "version": "v13_1",
+    "map": "Map03",
+    "layout": "historic",
+    "seed": 12345,
+    "score": 94.4,
+    "disposed": 10,
+    "path": "replays/v13_1/Map03_historic_seed12345.npz",
+    "sha256": "e384b2665903b80bdee29c8864da2302e68bea527bd74730a4fe4c2bbe6d668d"
+  },
+  {
+    "version": "v13_1",
+    "map": "Map04",
+    "layout": "historic",
+    "seed": 12345,
+    "score": 96.32,
+    "disposed": 10,
+    "path": "replays/v13_1/Map04_historic_seed12345.npz",
+    "sha256": "d193a219bf446275d6ae3f7d4c9c1c9a86d5b4becd724bcc3c0b84bfc434d6c0"
+  },
+  {
+    "version": "v13_1",
+    "map": "Map05",
+    "layout": "historic",
+    "seed": 12345,
+    "score": 95.96,
+    "disposed": 10,
+    "path": "replays/v13_1/Map05_historic_seed12345.npz",
+    "sha256": "f8faca84c8a355de084bdc3a76ec35f47c7b53c2223fd0dd1aaf23903fcd006e"
+  },
+  {
+    "version": "v13_1",
+    "map": "Map01",
+    "layout": "stress_far_wall_five_pairs",
+    "seed": 12345,
+    "score": 69.64,
+    "disposed": 9,
+    "path": "replays/v13_1/Map01_stress_far_wall_five_pairs_seed12345.npz",
+    "sha256": "d88229d2878d423c1a04b0c3dfe1cd726806bef404f252805fc5e7f92399eced"
+  },
+  {
+    "version": "v4",
+    "map": "Map01",
+    "layout": "historic",
+    "seed": 12345,
+    "score": 79.62,
+    "disposed": 10,
+    "path": "replays/v4/Map01_historic_seed12345.npz",
+    "sha256": "f6c50cf7b174662beb77fe0ddf7c867abb0fed5e4eb5bc8684785d7a220f0f54"
+  },
+  {
+    "version": "v4",
+    "map": "Map01",
+    "layout": "stratified",
+    "seed": 12345,
+    "score": 77.18,
+    "disposed": 10,
+    "path": "replays/v4/Map01_stratified_seed12345.npz",
+    "sha256": "16a2bd465ae447ba92e56562c57c1910e7af525a97013b5439b0dee1e9cae734"
+  },
+  {
+    "version": "v4",
+    "map": "Map01",
+    "layout": "edge_pairs",
+    "seed": 12345,
+    "score": 63.52,
+    "disposed": 8,
+    "path": "replays/v4/Map01_edge_pairs_seed12345.npz",
+    "sha256": "0842a07d48f09f18cfc3e3e0ca3ebc41de4981f1b17e71e2dba43a548f75d689"
+  },
+  {
+    "version": "v4",
+    "map": "Map02",
+    "layout": "historic",
+    "seed": 12345,
+    "score": 89.5,
+    "disposed": 10,
+    "path": "replays/v4/Map02_historic_seed12345.npz",
+    "sha256": "780624b0836bdc57550ab795a65decebb60b1cad31f61dceed68dd0e1f8d54f3"
+  },
+  {
+    "version": "v4",
+    "map": "Map02",
+    "layout": "stratified",
+    "seed": 12345,
+    "score": 97.24,
+    "disposed": 10,
+    "path": "replays/v4/Map02_stratified_seed12345.npz",
+    "sha256": "fcffe845acfb13982717a24decac69fac5c4aafbf5bf74871e716edb60d6ddd1"
+  },
+  {
+    "version": "v4",
+    "map": "Map02",
+    "layout": "edge_pairs",
+    "seed": 12345,
+    "score": 91.95,
+    "disposed": 10,
+    "path": "replays/v4/Map02_edge_pairs_seed12345.npz",
+    "sha256": "ef492d4474e018bde34ee7b525daca648e34d23e9c59b013e82459d8c7c356a3"
+  },
+  {
+    "version": "v4",
+    "map": "Map03",
+    "layout": "historic",
+    "seed": 12345,
+    "score": 94.44,
+    "disposed": 10,
+    "path": "replays/v4/Map03_historic_seed12345.npz",
+    "sha256": "87bf20aadb518e9a4ae4a0c21dd09944f5be0185e1021b86292e91caa3c331f4"
+  },
+  {
+    "version": "v4",
+    "map": "Map03",
+    "layout": "stratified",
+    "seed": 12345,
+    "score": 95.32,
+    "disposed": 10,
+    "path": "replays/v4/Map03_stratified_seed12345.npz",
+    "sha256": "fdfb000c59867e6790ff46fab6cbc45c3ccb70ae8659ae71abf16361d243ad87"
+  },
+  {
+    "version": "v4",
+    "map": "Map03",
+    "layout": "edge_pairs",
+    "seed": 12345,
+    "score": 94.72,
+    "disposed": 10,
+    "path": "replays/v4/Map03_edge_pairs_seed12345.npz",
+    "sha256": "2283206954d8cd395a37aeaf40dbfe0e012af934eb112d3ce1a36016be874001"
+  },
+  {
+    "version": "v4",
+    "map": "Map04",
+    "layout": "historic",
+    "seed": 12345,
+    "score": 74.11,
+    "disposed": 10,
+    "path": "replays/v4/Map04_historic_seed12345.npz",
+    "sha256": "831c38ec69dfc8e4c5facecb25d79fa294f18e0e7463cc71083167e506257dd9"
+  },
+  {
+    "version": "v4",
+    "map": "Map04",
+    "layout": "stratified",
+    "seed": 12345,
+    "score": 91.06,
+    "disposed": 10,
+    "path": "replays/v4/Map04_stratified_seed12345.npz",
+    "sha256": "a1f702b292442e08e7904f93e06f09706d62745bb7970416a3561f3062725248"
+  },
+  {
+    "version": "v4",
+    "map": "Map04",
+    "layout": "edge_pairs",
+    "seed": 12345,
+    "score": 97.08,
+    "disposed": 10,
+    "path": "replays/v4/Map04_edge_pairs_seed12345.npz",
+    "sha256": "75ae151d76e669ce6e3fe7c6e585fb0e54a5e8002181dcc4a60fb3717546063f"
+  },
+  {
+    "version": "v4",
+    "map": "Map05",
+    "layout": "historic",
+    "seed": 12345,
+    "score": 90.84,
+    "disposed": 10,
+    "path": "replays/v4/Map05_historic_seed12345.npz",
+    "sha256": "0bc132a522688f4aa4c3bf9ba34c0a6e3784205141229cf887f7b309df0a6c31"
+  },
+  {
+    "version": "v4",
+    "map": "Map05",
+    "layout": "stratified",
+    "seed": 12345,
+    "score": 94.36,
+    "disposed": 10,
+    "path": "replays/v4/Map05_stratified_seed12345.npz",
+    "sha256": "32f2415e88a5e9a01759edecb91f83b1526db2d3ec40765a1f62d01404426e29"
+  },
+  {
+    "version": "v4",
+    "map": "Map05",
+    "layout": "edge_pairs",
+    "seed": 12345,
+    "score": 94.4,
+    "disposed": 10,
+    "path": "replays/v4/Map05_edge_pairs_seed12345.npz",
+    "sha256": "7b2f8b07796b0673378fc6d84c59074803f5e06eeacb0c828ad4cdb10a170e97"
+  }
+]
