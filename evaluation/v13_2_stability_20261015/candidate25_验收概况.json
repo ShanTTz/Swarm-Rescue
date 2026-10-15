@@ -1,0 +1,18 @@
+{
+  "source_sha256": "78abaa8372c52942c6785d8f8697ff014a1fe4157f9c4cf44328d3e3f1c04263",
+  "runs": 39,
+  "full": 39,
+  "map1_matrix_passed": 15,
+  "paired": 15,
+  "reported": 5,
+  "pressure": 4,
+  "baseline_paired_mean": 93.36133333333333,
+  "candidate_paired_mean": 95.27733333333333,
+  "baseline_paired_health": 81.65333333333334,
+  "candidate_paired_health": 82.61333333333333,
+  "all_required_complete": true,
+  "changed_source_files": [
+    "src/swarm_rescue/solutions/upgrade/controller_v13.py",
+    "src/swarm_rescue/solutions/upgrade/disposal_navigation.py"
+  ]
+}

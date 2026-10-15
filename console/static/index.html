@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Swarm-Rescue 控制台</title>
+<style>
+:root{
+  --bg:#0b1220;--panel:#111a2c;--panel2:#0e1626;--line:#1f2c44;--line2:#2a3a5c;
+  --text:#dbe4f3;--dim:#8b9bb8;--accent:#38bdf8;--accent2:#0ea5e9;--ok:#34d399;
+  --warn:#fbbf24;--err:#f87171;--violet:#a78bfa;--mono:'Cascadia Mono',Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 "Segoe UI","Microsoft YaHei",sans-serif}
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:10px 18px;
+  background:linear-gradient(180deg,#0d1526,#0b1220);border-bottom:1px solid var(--line)}
+header h1{font-size:17px;margin:0;white-space:nowrap}
+header h1 span{color:var(--accent)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:20px;padding:2px 10px;background:var(--panel2)}
+.chip b{color:var(--text);font-weight:600}
+nav{display:flex;gap:4px;margin-left:auto}
+nav button{background:none;border:1px solid transparent;color:var(--dim);font-size:13.5px;
+  padding:6px 14px;border-radius:8px;cursor:pointer}
+nav button:hover{color:var(--text);background:var(--panel)}
+nav button.on{color:#06121f;background:var(--accent);font-weight:600}
+.layout{display:flex;gap:14px;padding:14px 18px;align-items:flex-start}
+main{flex:1;min-width:0}
+aside{width:390px;flex-shrink:0;position:sticky;top:62px;max-height:calc(100vh - 76px);display:flex;flex-direction:column}
+@media (max-width:1100px){.layout{flex-direction:column}aside{width:100%;position:static;max-height:none}}
+section.tab{display:none}
+section.tab.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.card h2{margin:0 0 4px;font-size:14.5px;display:flex;align-items:center;gap:8px}
+.card h2 .sub{font-size:12px;color:var(--dim);font-weight:400;margin-left:4px}
+.hint{color:var(--dim);font-size:12px;margin:2px 0 10px}
+.hint b{color:var(--warn)}
+.btn{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);color:var(--text);
+  border:1px solid var(--line2);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;transition:.15s}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed;border-color:var(--line)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#06121f;font-weight:700;font-size:14px;padding:9px 22px}
+.btn.primary:hover{background:var(--accent2);color:#06121f}
+.btn.danger{color:var(--err);border-color:#5b2a2a}
+.btn.danger:hover{border-color:var(--err)}
+.btn.sm{padding:3px 10px;font-size:12px;border-radius:6px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grid-maps{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px}
+.map-card{border:1px solid var(--line);border-radius:10px;background:var(--panel2);cursor:pointer;overflow:hidden;transition:.15s}
+.map-card:hover{border-color:var(--line2)}
+.map-card.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.map-card .prev{height:84px;background:#0a0f1c center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:#31415f;font-size:11px}
+.map-card .meta{padding:7px 10px}
+.map-card .meta b{font-size:13.5px}
+.badge{display:inline-block;font-size:10.5px;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.badge.ok{color:#06251a;background:var(--ok)}
+.badge.off{color:#4a3a12;background:var(--warn)}
+.badge.dim{color:var(--dim);border:1px solid var(--line2)}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--dim)}
+.field input,.field select{background:var(--panel2);border:1px solid var(--line2);color:var(--text);
+  border-radius:7px;padding:7px 10px;font-size:13px;min-width:120px}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent)}
+.check{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);cursor:pointer;user-select:none}
+.check input{accent-color:var(--accent)}
+.cmd{font-family:var(--mono);font-size:11.5px;color:#7dd3fc;background:#0a101e;border:1px dashed var(--line2);
+  border-radius:8px;padding:8px 10px;margin-top:10px;word-break:break-all}
+table{width:100%;border-collapse:collapse;font-size:12.8px}
+th{color:var(--dim);font-weight:500;text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid #16203a;white-space:nowrap}
+tr:hover td{background:#131d33}
+td .btn{margin-right:4px}
+.scroll{overflow:auto;max-height:420px;border:1px solid var(--line);border-radius:10px}
+.tag{font-size:10.5px;border-radius:4px;padding:1px 6px}
+.tag.b{color:var(--violet);border:1px solid #4c3f7a}
+.tag.l{color:var(--accent);border:1px solid #1e4a63}
+.step{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px dashed var(--line)}
+.step:last-child{border-bottom:none}
+.step .no{width:24px;height:24px;border-radius:50%;background:var(--panel2);border:1px solid var(--line2);
+  display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--accent);flex-shrink:0}
+.step .t{flex:1;min-width:0}
+.step .t b{font-size:13px}
+.step .t .d{font-size:11.5px;color:var(--dim)}
+.state{font-size:11px;border-radius:4px;padding:2px 8px;white-space:nowrap}
+.state.y{color:#06251a;background:var(--ok)}
+.state.n{color:var(--dim);background:#1a2338}
+.state.r{color:var(--warn);background:#332a12}
+#jobs .jcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:8px;overflow:hidden}
+#jobs .jhead{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer}
+#jobs .jhead:hover{background:#141f36}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot.running{background:var(--accent);animation:pulse 1.2s infinite}
+.dot.done{background:var(--ok)}
+.dot.failed{background:var(--err)}
+.dot.stopped,.dot.stopping{background:var(--warn)}
+@keyframes pulse{50%{opacity:.35}}
+#jobs .jlabel{flex:1;min-width:0;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#jobs .jtime{font-size:11px;color:var(--dim);white-space:nowrap}
+#jobs pre{margin:0;max-height:260px;overflow:auto;background:#080d18;padding:8px 10px;
+  font-family:var(--mono);font-size:11px;line-height:1.45;color:#9fb3d1;border-top:1px solid var(--line);white-space:pre-wrap;word-break:break-all}
+#jobs .hl{padding:2px 10px;font-family:var(--mono);font-size:11px;color:var(--ok);background:#0d1a14;border-top:1px solid var(--line)}
+#jobs .jbtns{display:flex;gap:6px;padding:0 10px 8px}
+#joblist{flex:1;overflow-y:auto;min-height:80px}
+.aside-head{display:flex;align-items:center;gap:8px;padding:4px 2px 8px}
+.aside-head h2{margin:0;font-size:14px}
+.count{background:var(--accent);color:#06121f;font-size:11px;font-weight:700;border-radius:10px;padding:0 8px}
+.empty{color:var(--dim);font-size:12.5px;text-align:center;padding:20px 0}
+#toasts{position:fixed;bottom:18px;right:18px;z-index:99;display:flex;flex-direction:column;gap:8px}
+.toast{background:#1a2440;border:1px solid var(--line2);border-left:3px solid var(--accent);border-radius:8px;
+  padding:9px 14px;font-size:13px;max-width:380px;box-shadow:0 6px 24px #0008;animation:in .2s}
+.toast.err{border-left-color:var(--err)}
+.toast.ok{border-left-color:var(--ok)}
+@keyframes in{from{transform:translateY(8px);opacity:0}}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;font-size:12.5px;margin:8px 0}
+.kv span{color:var(--dim)}
+.score-big{font-size:22px;font-weight:700;color:var(--ok)}
+.summary-line{display:flex;gap:18px;align-items:baseline;margin:4px 0 10px;font-size:12.5px;color:var(--dim)}
+.pill{font-size:11px;color:var(--dim);border:1px solid var(--line);padding:1px 8px;border-radius:10px}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <h1>🛰 Swarm-Rescue <span>控制台</span></h1>
+  <div class="chips" id="env-chips"></div>
+  <nav id="tabs">
+    <button data-tab="run" class="on">▶ 运行</button>
+    <button data-tab="replay">⏵ 回放</button>
+    <button data-tab="maps">🗺 地图管理</button>
+    <button data-tab="tools">🧰 工具</button>
+    <button data-tab="results">📊 结果</button>
+  </nav>
+</header>
+
+<div class="layout">
+<main>
+
+<!-- ══════════ 运行 ══════════ -->
+<section class="tab on" id="tab-run">
+  <div class="card">
+    <h2>选择地图 <span class="sub" id="map-count"></span></h2>
+    <div class="hint">点击卡片选择地图；布局与炸弹文件由 <code>fixtures/bombs/</code>、<code>map_data/</code> 自动发现。</div>
+    <div class="grid-maps" id="map-grid"></div>
+  </div>
+  <div class="card">
+    <h2>运行参数</h2>
+    <div class="row" style="margin-top:8px">
+      <label class="field">布局 / 炸弹<select id="f-layout"></select></label>
+      <label class="field">Seed<input id="f-seed" type="number" value="12345" min="0" max="4294967295"></label>
+      <label class="check"><input type="checkbox" id="f-headless"> 后台运行（不弹窗口，更快）</label>
+      <label class="check"><input type="checkbox" id="f-suite"> 全套15局（Map01-05 × 3布局，忽略上面的选择）</label>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn primary" id="btn-run">▶ 开始运行</button>
+      <span class="hint" style="margin:0">运行会弹出仿真窗口（未勾选后台时）；结果写入 <code>results/</code>，结束后可在「结果」页回放。</span>
+    </div>
+    <div class="cmd" id="run-cmd"></div>
+  </div>
+</section>
+
+<!-- ══════════ 回放 ══════════ -->
+<section class="tab" id="tab-replay">
+  <div class="card">
+    <h2>回放录像 <span class="sub">共 <span id="rp-count">0</span> 条（内置 + 本地生成）</span></h2>
+    <div class="hint">回放窗口打开后处于<b>暂停</b>状态，按<b>空格</b>开始播放。</div>
+    <div class="row" style="margin:8px 0">
+      <label class="field">版本<select id="rp-ver"><option value="">全部</option></select></label>
+      <label class="field">地图<select id="rp-map"><option value="">全部</option></select></label>
+      <label class="field">搜索<input id="rp-q" placeholder="布局 / seed / 路径"></label>
+    </div>
+    <div class="scroll"><table id="rp-table"><thead><tr>
+      <th>来源</th><th>版本</th><th>地图</th><th>布局</th><th>Seed</th><th>处置</th><th>分数</th><th></th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<!-- ══════════ 地图管理 ══════════ -->
+<section class="tab" id="tab-maps">
+  <div class="card">
+    <h2>新增地图向导 <span class="sub">对应 docs/02 的五步流程，逐步按钮化</span></h2>
+    <div class="row" style="margin:6px 0 2px">
+      <label class="field">新地图编号<input id="mw-num" style="width:80px" placeholder="如 11"></label>
+      <label class="check" style="margin-top:16px"><input type="checkbox" id="mw-overwrite"> 允许覆盖同名文件</label>
+      <span class="hint" style="margin:14px 0 0" id="mw-template-info"></span>
+    </div>
+    <div id="mw-status" class="row" style="margin:10px 0"></div>
+    <div id="mw-steps"></div>
+    <div class="hint" style="margin-top:10px">⚠ 注册地图会修改 <code>launcher.py</code>（自动备份到 <code>console/logs/backups/</code>）；新增地图会改变源码哈希，后续成绩记录新哈希属正常现象。③⑤⑥在「任务」面板看输出。</div>
+  </div>
+  <div class="card">
+    <h2>现有地图</h2>
+    <div class="scroll"><table id="map-table"><thead><tr>
+      <th>地图</th><th>已注册</th><th>JSON</th><th>代码</th><th>配置</th><th>炸弹布局</th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<!-- ══════════ 工具 ══════════ -->
+<section class="tab" id="tab-tools">
+  <div class="card">
+    <h2>测试与检查</h2>
+    <div class="row" style="margin-top:8px">
+      <button class="btn" data-tool="test">🧪 回归测试（143项）</button>
+      <button class="btn" data-tool="test_full">🧪 全量测试（347项）</button>
+      <button class="btn" data-tool="check">✅ 提交检查</button>
+      <button class="btn" data-tool="smoke">💨 冒烟测试（120步）</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>分数汇总</h2>
+    <div class="hint">对 <code>results/</code> 里的一个批次目录重算汇总（等同 <code>run.ps1 Scores</code>）。</div>
+    <div class="row">
+      <label class="field">结果批次<select id="tool-batch" style="min-width:280px"></select></label>
+      <button class="btn" id="btn-scores">📈 生成汇总</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 结果 ══════════ -->
+<section class="tab" id="tab-results">
+  <div class="card">
+    <h2>运行结果</h2>
+    <div class="row" style="margin:6px 0">
+      <label class="field">批次<select id="res-batch" style="min-width:300px"></select></label>
+      <button class="btn sm" id="res-refresh">刷新</button>
+      <button class="btn sm" id="res-open">打开批次目录</button>
+      <button class="btn sm" id="res-scores">分数汇总</button>
+    </div>
+    <div class="summary-line" id="res-summary"></div>
+    <div class="scroll"><table id="res-table"><thead><tr>
+      <th>用例</th><th>处置</th><th>分数</th><th>健康返回</th><th>状态</th><th></th>
+    </tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+</main>
+
+<!-- ══════════ 任务面板 ══════════ -->
+<aside>
+  <div class="aside-head"><h2>⚙ 任务</h2><span class="count" id="run-count" style="display:none">0</span>
+    <span class="hint" style="margin:0">点击任务展开/收起日志</span></div>
+  <div id="joblist"><div class="empty">暂无任务</div></div>
+</aside>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const state = { maps: [], templates: {}, nextNum: '11', replays: [], batches: [],
+  selMap: null, combos: [], jobs: [], logOffsets: {}, logOpen: {}, prevStatus: {} };
+
+function esc(s){ return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function toast(msg, kind='info', ms=4200){
+  const d = document.createElement('div'); d.className = 'toast ' + kind; d.textContent = msg;
+  $('#toasts').appendChild(d); setTimeout(() => d.remove(), ms);
+}
+async function api(path, body){
+  const opt = body !== undefined ? {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)} : {};
+  let r;
+  try { r = await fetch(path, opt); }
+  catch(e){ throw new Error('无法连接控制台服务'); }
+  const data = await r.json().catch(() => ({error: '响应解析失败'}));
+  if (!r.ok || data.error) throw new Error(data.error || ('HTTP ' + r.status));
+  return data;
+}
+function fmtTime(ts){ const d = new Date(ts * 1000); return d.toTimeString().slice(0, 8); }
+function elapsed(j){ const end = j.ended || Date.now()/1000; const s = Math.max(0, Math.round(end - j.started));
+  return s < 60 ? s + 's' : Math.floor(s/60) + 'm' + (s%60) + 's'; }
+function comboDesc(c){ return c.via === 'layout' ? `布局 ${c.layout}` : `炸弹文件 ${c.bombs}`; }
+
+/* ───────── 标签页 ───────── */
+$$('#tabs button').forEach(b => b.onclick = () => {
+  $$('#tabs button').forEach(x => x.classList.toggle('on', x === b));
+  $$('section.tab').forEach(s => s.classList.toggle('on', s.id === 'tab-' + b.dataset.tab));
+  if (b.dataset.tab === 'replay') loadReplays();
+  if (b.dataset.tab === 'results') loadResults();
+  if (b.dataset.tab === 'maps') loadMaps();
+  if (b.dataset.tab === 'run') loadMaps();
+});
+
+/* ───────── 数据加载 ───────── */
+async function loadEnv(){
+  try {
+    const env = await api('/api/env');
+    const v = env.version && (env.version.version || env.version.Version) || '';
+    $('#env-chips').innerHTML =
+      `<span class="chip">正式版 <b>${esc(v || 'v13.2')}</b></span>` +
+      `<span class="chip">Python <b>${env.python ? esc(env.python_version || 'ok') : '未找到'}</b></span>` +
+      `<span class="chip">端口 <b>${env.port}</b></span>`;
+  } catch(e){ /* banner via jobs poll */ }
+}
+async function loadMaps(){
+  const data = await api('/api/maps');
+  state.maps = data.maps; state.templates = data.templates; state.nextNum = data.next_num;
+  $('#map-count').textContent = `共 ${data.maps.length} 张，已注册 ${data.registered_count} 张`;
+  renderMapGrid(); renderMapTable(); renderWizard();
+  if (!state.selMap && data.maps.length) selectMap(data.maps.find(m => m.registered && m.combos.length) || data.maps[0]);
+  else if (state.selMap) { const again = data.maps.find(m => m.name === state.selMap); if (again) selectMap(again); }
+}
+async function loadReplays(){
+  const data = await api('/api/replays');
+  state.replays = data.rows;
+  const vers = [...new Set(data.rows.map(r => r.version))].sort();
+  const maps = [...new Set(data.rows.map(r => r.map))].sort();
+  const keep = (sel, arr) => sel && arr.includes(sel) ? sel : '';
+  const v0 = keep($('#rp-ver').value, vers), m0 = keep($('#rp-map').value, maps);
+  $('#rp-ver').innerHTML = '<option value="">全部</option>' + vers.map(v => `<option ${v===v0?'selected':''}>${esc(v)}</option>`).join('');
+  $('#rp-map').innerHTML = '<option value="">全部</option>' + maps.map(m => `<option ${m===m0?'selected':''}>${esc(m)}</option>`).join('');
+  $('#rp-count').textContent = data.rows.length;
+  renderReplays();
+}
+async function loadResults(){
+  const data = await api('/api/results');
+  state.batches = data.batches;
+  const sel = $('#res-batch').value;
+  $('#res-batch').innerHTML = data.batches.map(b => `<option value="${esc(b.dir)}">${esc(b.name)}（${b.cases.length}局）</option>`).join('');
+  if (sel && data.batches.some(b => b.dir === sel)) $('#res-batch').value = sel;
+  const tb = $('#tool-batch');
+  const ts = tb.value;
+  tb.innerHTML = data.batches.map(b => `<option value="${esc(b.dir)}">${esc(b.name)}</option>`).join('');
+  if (ts && data.batches.some(b => b.dir === ts)) tb.value = ts;
+  renderResults();
+}
+
+/* ───────── 运行页 ───────── */
+function selectMap(m){
+  state.selMap = m.name; state.combos = m.combos || [];
+  renderMapGrid();
+  const sel = $('#f-layout');
+  sel.innerHTML = state.combos.length
+    ? state.combos.map((c, i) => `<option value="${i}">${esc(c.label)}</option>`).join('')
+    : '<option value="">（该地图没有已发现的布局/炸弹文件）</option>';
+  sel.disabled = !state.combos.length;
+  updateRunCmd();
+}
+function renderMapGrid(){
+  $('#map-grid').innerHTML = state.maps.map(m => `
+    <div class="map-card ${m.name === state.selMap ? 'sel' : ''}" data-map="${esc(m.name)}">
+      <div class="prev" ${m.preview ? `style="background-image:url('${m.preview}')"` : ''}>${m.preview ? '' : '无预览图'}</div>
+      <div class="meta"><b>${esc(m.name)}</b>
+        <span class="badge ${m.registered ? 'ok' : 'off'}">${m.registered ? '已注册' : '未注册'}</span>
+        <div style="font-size:11px;color:var(--dim);margin-top:3px">${(m.combos || []).length} 种布局</div>
+      </div>
+    </div>`).join('');
+  $$('#map-grid .map-card').forEach(c => c.onclick = () => {
+    const m = state.maps.find(x => x.name === c.dataset.map); if (m) selectMap(m);
+  });
+}
+function runCmdText(){
+  if ($('#f-suite').checked)
+    return `python -u scripts/run_blue.py --suite --seed ${$('#f-seed').value || 12345}${$('#f-headless').checked ? ' --headless' : ''}`;
+  const c = state.combos[$('#f-layout').value] || {};
+  let cmd = `python -u scripts/run_blue.py --map ${state.selMap || 'Map??'} --seed ${$('#f-seed').value || 12345}`;
+  cmd += c.via === 'bombs' ? ` --bombs ${c.bombs}` : (c.layout ? ` --layout ${c.layout}` : '');
+  if ($('#f-headless').checked) cmd += ' --headless';
+  return cmd;
+}
+function updateRunCmd(){ $('#run-cmd').textContent = runCmdText(); }
+['f-layout','f-seed','f-headless','f-suite'].forEach(id => $('#' + id).addEventListener('change', updateRunCmd));
+$('#btn-run').onclick = async () => {
+  if (!state.selMap && !$('#f-suite').checked) return toast('请先选择地图', 'err');
+  const seed = parseInt($('#f-seed').value, 10);
+  if (!Number.isInteger(seed) || seed < 0 || seed >= 2**32) return toast('seed 必须在 [0, 2^32) 内', 'err');
+  const c = state.combos[$('#f-layout').value] || {};
+  const body = { map: state.selMap, seed, headless: $('#f-headless').checked, suite: $('#f-suite').checked,
+    layout: c.via === 'layout' ? c.layout : '', bombs: c.via === 'bombs' ? c.bombs : '' };
+  try {
+    const r = await api('/api/run', body);
+    toast('已启动：' + r.job.label, 'ok'); openLog(r.job.id);
+  } catch(e){ toast(e.message, 'err'); }
+};
+
+/* ───────── 回放页 ───────── */
+function renderReplays(){
+  const ver = $('#rp-ver').value, map = $('#rp-map').value, q = $('#rp-q').value.trim().toLowerCase();
+  const rows = state.replays.filter(r =>
+    (!ver || r.version === ver) && (!map || r.map === map) &&
+    (!q || [r.layout, String(r.seed), r.path].join(' ').toLowerCase().includes(q)));
+  $('#rp-table tbody').innerHTML = rows.map((r, i) => `
+    <tr><td><span class="tag ${r.source === 'bundled' ? 'b' : 'l'}">${r.source === 'bundled' ? '内置' : '本地'}</span></td>
+    <td>${esc(r.version)}</td><td>${esc(r.map)}</td><td>${esc(r.layout)}</td><td>${esc(r.seed)}</td>
+    <td>${esc(r.disposed ?? '–')}/10</td><td>${esc(r.score ?? '–')}</td>
+    <td><button class="btn sm" data-rp="${esc(r.path)}">▶ 回放</button></td></tr>`).join('') ||
+    '<tr><td colspan="8" class="empty">没有匹配的录像</td></tr>';
+  $$('#rp-table [data-rp]').forEach(b => b.onclick = () => startReplay({ file: b.dataset.rp }));
+}
+['rp-ver','rp-map'].forEach(id => $('#' + id).addEventListener('change', renderReplays));
+$('#rp-q').addEventListener('input', renderReplays);
+function startReplay(body){
+  api('/api/replay', body)
+    .then(r => { toast('已启动：' + r.job.label + '（窗口打开后按空格开始）', 'ok'); openLog(r.job.id); })
+    .catch(e => toast(e.message, 'err'));
+}
+
+/* ───────── 地图管理页 ───────── */
+function renderWizard(){
+  const num = normNum($('#mw-num').value || state.nextNum);
+  $('#mw-num').value = num;
+  const m = state.maps.find(x => x.num === num);
+  const t = state.templates;
+  $('#mw-template-info').textContent = t.map_json ? `模板：${t.map_json}` : '（templates/ 无地图模板）';
+  const chk = (ok, label) => `<span class="state ${ok ? 'y' : 'n'}">${ok ? '✓' : '✗'} ${label}</span>`;
+  const bombs = m ? (m.files.bombs || []) : [];
+  $('#mw-status').innerHTML =
+    chk(!!(m && m.files.editor_json), 'JSON') + chk(!!(m && m.files.map_code), '地图代码') +
+    chk(!!(m && m.registered), '已注册') + chk(!!(m && m.files.config), '运行配置') +
+    chk(bombs.length > 0, `炸弹布局 ×${bombs.length}`);
+  const step = (no, title, desc, btn, dis, extra) => `
+    <div class="step"><div class="no">${no}</div>
+      <div class="t"><b>${title}</b><div class="d">${desc}</div></div>${extra || ''}<button class="btn sm" ${dis ? 'disabled' : ''} id="${btn.id}">${btn.label}</button></div>`;
+  $('#mw-steps').innerHTML =
+    step('①', '从模板新建编辑器 JSON', '复制 templates 的地图 JSON 到 map_data/，再用墙体编辑器修改。', {id:'mw-new', label:'新建 JSON'}, !t.map_json) +
+    step('②', '打开墙体编辑器', '在弹出的窗口里打开/编辑 JSON，保存到 map_data/map_XX.json。', {id:'mw-editor', label:'打开编辑器'}, false) +
+    step('③', '生成地图 Python 代码', '运行 json_to_map，生成 src/swarm_rescue/maps/map_XX.py 与 walls_XX.py。', {id:'mw-gen', label:'生成代码'}, !(m && m.files.editor_json)) +
+    step('④', '注册到启动器', '在 launcher.py 加入 import（自动备份；已注册则跳过）。', {id:'mw-reg', label:'注册'}, !(m && m.files.map_code)) +
+    step('⑤', '生成运行配置', '从模板生成 config/rescue_MapXX.yml（map_name 自动替换）。', {id:'mw-cfg', label:'生成配置'}, !t.config_yml) +
+    step('⑥', '放置 10 枚炸弹', '弹出炸弹编辑器：左键添加、右键删除、J 导出 JSON、Q 退出。', {id:'mw-bomb', label:'打开炸弹编辑器'}, !(m && m.registered),
+      `<input id="mw-bomb-out" value="fixtures/bombs/Map${num}_custom.json" style="background:var(--panel2);border:1px solid var(--line2);color:var(--text);border-radius:6px;padding:5px 8px;font-size:12px;width:250px">`) +
+    step('⑦', '提交检查', '运行 check_submission.py 验证注册与环境。', {id:'mw-check', label:'开始检查'}, false);
+  const ov = () => ({ name: num, overwrite: $('#mw-overwrite').checked });
+  $('#mw-new').onclick = () => api('/api/map/new', ov())
+    .then(r => { toast('已创建 ' + r.path, 'ok'); loadMaps(); })
+    .catch(e => toast(e.message, 'err'));
+  $('#mw-editor').onclick = () => api('/api/editor', {kind:'map'})
+    .then(() => toast('墙体编辑器已启动', 'ok'))
+    .catch(e => toast(e.message, 'err'));
+  $('#mw-gen').onclick = () => api('/api/map/generate', {name: num})
+    .then(r => { toast('生成任务已启动，看右侧日志', 'ok'); openLog(r.job.id); })
+    .catch(e => toast(e.message, 'err'));
+  $('#mw-reg').onclick = () => api('/api/map/register', ov())
+    .then(r => { toast(r.message, 'ok'); loadMaps(); })
+    .catch(e => toast(e.message, 'err'));
+  $('#mw-cfg').onclick = () => api('/api/map/config', ov())
+    .then(r => { toast('已生成 ' + r.path, 'ok'); loadMaps(); })
+    .catch(e => toast(e.message, 'err'));
+  $('#mw-bomb').onclick = () => api('/api/editor', {kind:'bomb', map:'Map' + (+num), output: $('#mw-bomb-out').value})
+    .then(() => toast('炸弹编辑器已启动，导出后回到「运行」页选择该文件', 'ok', 6000))
+    .catch(e => toast(e.message, 'err'));
+  $('#mw-check').onclick = () => api('/api/tool', {action:'check'})
+    .then(() => toast('提交检查已启动', 'ok'))
+    .catch(e => toast(e.message, 'err'));
+}
+function normNum(v){
+  const n = parseInt(v, 10);
+  return Number.isInteger(n) && n > 0 && n < 100 ? String(n).padStart(2, '0') : '';
+}
+$('#mw-num').addEventListener('input', renderWizard);
+function renderMapTable(){
+  $('#map-table tbody').innerHTML = state.maps.map(m => `
+    <tr><td><b>${esc(m.name)}</b></td>
+    <td>${m.registered ? '<span class="state y">✓</span>' : '<span class="state n">✗</span>'}</td>
+    <td>${m.files.editor_json ? '<span class="state y">✓</span>' : '<span class="state n">—</span>'}</td>
+    <td>${m.files.map_code ? '<span class="state y">✓</span>' : '<span class="state n">—</span>'}</td>
+    <td>${m.files.config ? '<span class="state y">✓</span>' : '<span class="state n">—</span>'}</td>
+    <td style="white-space:normal;max-width:330px">${esc((m.files.bombs || []).join('、')) || '—'}</td></tr>`).join('');
+}
+
+/* ───────── 工具页 ───────── */
+$$('[data-tool]').forEach(b => b.onclick = () =>
+  api('/api/tool', {action: b.dataset.tool})
+    .then(() => toast('已启动：' + b.textContent.trim(), 'ok'))
+    .catch(e => toast(e.message, 'err')));
+$('#btn-scores').onclick = () => {
+  const dir = $('#tool-batch').value;
+  if (!dir) return toast('没有可选的结果批次', 'err');
+  api('/api/tool', {action:'scores', dir})
+    .then(() => toast('分数汇总已启动', 'ok'))
+    .catch(e => toast(e.message, 'err'));
+};
+
+/* ───────── 结果页 ───────── */
+function currentBatch(){ return state.batches.find(b => b.dir === $('#res-batch').value); }
+function renderResults(){
+  const b = currentBatch();
+  if (!b){ $('#res-summary').textContent = 'results/ 下还没有批次目录'; $('#res-table tbody').innerHTML = ''; return; }
+  const full = b.cases.filter(c => c.full_disposal).length;
+  $('#res-summary').innerHTML =
+    `<span>批次 <b style="color:var(--text)">${esc(b.name)}</b></span>` +
+    `<span>用例 <b style="color:var(--text)">${b.cases.length}</b></span>` +
+    `<span>全部处置 <b style="color:var(--ok)">${full}</b>/${b.cases.length}</span>` +
+    (b.cases.length ? `<span>平均分 <b style="color:var(--accent)">${(b.cases.reduce((s, c) => s + (+c.score || 0), 0) / b.cases.length).toFixed(2)}</b></span>` : '');
+  $('#res-table tbody').innerHTML = b.cases.map(c => `
+    <tr><td>${esc(c.name)}</td><td><b>${esc(c.disposed ?? '–')}</b>/10</td>
+    <td>${esc(c.score ?? '–')}</td><td>${esc(c.health ?? '–')}%</td>
+    <td>${c.full_disposal ? '<span class="state y">✓ 全部处置</span>' : (c.exit_code === 0 ? '<span class="state r">部分</span>' : '<span class="state r">失败</span>')}</td>
+    <td>${(c.replays || []).length ? `<button class="btn sm" data-rr="${esc(c.replays[0])}">▶ 回放</button>` : ''}
+        ${c.output ? `<button class="btn sm" data-ro="${esc(c.output)}">打开目录</button>` : ''}</td></tr>`).join('') ||
+    '<tr><td colspan="6" class="empty">该批次没有 metrics.json 的用例</td></tr>';
+  $$('#res-table [data-rr]').forEach(x => x.onclick = () => startReplay({file: x.dataset.rr}));
+  $$('#res-table [data-ro]').forEach(x => x.onclick = () => api('/api/open', {path: x.dataset.ro}).catch(e => toast(e.message, 'err')));
+}
+$('#res-batch').addEventListener('change', renderResults);
+$('#res-refresh').onclick = () => loadResults().catch(e => toast(e.message, 'err'));
+$('#res-open').onclick = () => { const b = currentBatch(); if (b) api('/api/open', {path: b.dir}).catch(e => toast(e.message, 'err')); };
+$('#res-scores').onclick = () => { const b = currentBatch(); if (!b) return;
+  api('/api/tool', {action:'scores', dir: b.dir}).then(() => toast('分数汇总已启动', 'ok')).catch(e => toast(e.message, 'err')); };
+
+/* ───────── 任务面板 ───────── */
+function openLog(id){ state.logOpen[id] = true; renderJobs(); fetchDelta(id); }
+function renderJobs(){
+  const running = state.jobs.filter(j => j.status === 'running').length;
+  $('#run-count').style.display = running ? '' : 'none';
+  $('#run-count').textContent = running;
+  $('#joblist').innerHTML = state.jobs.length ? '' : '<div class="empty">暂无任务</div>';
+  state.jobs.forEach(j => {
+    const open = !!state.logOpen[j.id];
+    const card = document.createElement('div');
+    card.className = 'jcard';
+    card.innerHTML = `
+      <div class="jhead"><span class="dot ${esc(j.status)}"></span>
+        <span class="jlabel" title="${esc(j.label)}">${esc(j.label)}</span>
+        <span class="jtime">${j.status === 'running' ? esc(elapsed(j)) : esc(j.status === 'done' ? '完成' : j.status === 'stopped' ? '已停止' : '失败 ' + (j.exit ?? ''))}</span></div>
+      ${open ? `<pre id="log-${esc(j.id)}"></pre>` : ''}
+      ${open && j.status !== 'running' ? (j.exit === 0 ? '<div class="hl">✔ 退出码 0</div>' : `<div class="hl" style="color:var(--err)">✘ 退出码 ${esc(j.exit)}</div>`) : ''}
+      <div class="jbtns">
+        ${j.status === 'running' ? `<button class="btn sm danger" data-stop="${esc(j.id)}">⏹ 停止</button>` : ''}
+        ${j.status !== 'running' && j.type === 'run' ? '<button class="btn sm" data-goto-results="1">📊 查看结果</button>' : ''}
+      </div>`;
+    card.querySelector('.jhead').onclick = e => {
+      if (e.target.closest('button')) return;
+      state.logOpen[j.id] = !open;
+      renderJobs();
+      if (state.logOpen[j.id]) fetchDelta(j.id);
+    };
+    $('#joblist').appendChild(card);
+  });
+  $$('#joblist [data-stop]').forEach(b => b.onclick = () =>
+    api('/api/job/stop', {id: b.dataset.stop}).catch(e => toast(e.message, 'err')));
+  $$('#joblist [data-goto-results]').forEach(b => b.onclick = () => {
+    $$('#tabs button')[4].click();
+    loadResults().catch(() => {});
+  });
+  state.jobs.forEach(j => { if (state.logOpen[j.id]) paintLog(j); });
+}
+async function fetchDelta(id){
+  const off = state.logOffsets[id] || 0;
+  try {
+    const r = await api(`/api/job?id=${encodeURIComponent(id)}&offset=${off}`);
+    state.logOffsets[id] = r.log_len;
+    const box = $('#log-' + CSS.escape(id));
+    if (box){
+      if (r.chunk) box.dataset.full = (box.dataset.full || '') + r.chunk;
+      const lines = (box.dataset.full || '').split('\n');
+      box.textContent = lines.slice(-400).join('\n');
+      if (box.scrollHeight - box.scrollTop - box.clientHeight < 60) box.scrollTop = box.scrollHeight;
+    }
+    return r;
+  } catch(e){ return null; }
+}
+function paintLog(j){
+  const box = $('#log-' + CSS.escape(j.id));
+  if (box && box.dataset.full) box.textContent = box.dataset.full.split('\n').slice(-400).join('\n');
+}
+
+let pollTimer = null;
+async function poll(){
+  try {
+    const data = await api('/api/jobs');
+    state.jobs = data.jobs;
+    // detect newly finished jobs -> refresh data + auto log
+    data.jobs.forEach(j => {
+      const prev = state.prevStatus[j.id];
+      if (prev === 'running' && j.status !== 'running'){
+        loadResults().catch(() => {});
+        loadReplays().catch(() => {});
+        if (j.type === 'maptool' || j.type === 'run') loadMaps().catch(() => {});
+        if (j.type === 'run') toast((j.exit === 0 ? '✔ 运行完成：' : '✘ 运行失败：') + j.label, j.exit === 0 ? 'ok' : 'err', 8000);
+      }
+      state.prevStatus[j.id] = j.status;
+    });
+    renderJobs();
+    for (const j of data.jobs){
+      if (j.status === 'running' || state.logOpen[j.id]) await fetchDelta(j.id);
+    }
+    connOk();
+  } catch(e){ connBad(); }
+}
+let connFails = 0;
+function connOk(){ if (connFails >= 3) toast('控制台服务已恢复连接', 'ok'); connFails = 0; }
+function connBad(){ connFails++; if (connFails === 3) toast('连接控制台服务失败，请确认 server.py 正在运行', 'err', 8000); }
+
+/* ───────── 启动 ───────── */
+localStorage.getItem('seed') && ($('#f-seed').value = localStorage.getItem('seed'));
+$('#f-seed').addEventListener('change', () => localStorage.setItem('seed', $('#f-seed').value));
+loadEnv(); loadMaps().catch(e => toast(e.message, 'err')); loadResults().catch(() => {});
+pollTimer = setInterval(poll, 800);
+</script>
+</body>
+</html>

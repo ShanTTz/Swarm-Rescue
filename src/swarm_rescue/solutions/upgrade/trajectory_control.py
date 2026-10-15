@@ -17,6 +17,7 @@ class PayloadTrajectoryController:
         self.calls = 0
         self.peer_sweep = False
         self.peer_soft = False
+        self.escape_peers = False
 
     def command(self, goal, velocity, ranges, angles, *, loaded=False,
                 load_offset=None, speed_limit=1., peers=()):
@@ -122,7 +123,13 @@ class PayloadTrajectoryController:
         if not self.peer_sweep or self.peer_soft:
             for point, peer_velocity in peers:
                 peer_end = np.asarray(point)+6*np.asarray(peer_velocity)
-                collision |= np.linalg.norm(position-peer_end, axis=1) < 23.
+                limit=23.
+                if self.escape_peers and not loaded:
+                    # In a squeezed queue every short rollout can end inside
+                    # 23px even when it increases the initial separation. The
+                    # normal threshold must not reject all escape directions.
+                    limit=min(limit,max(0.,float(np.linalg.norm(point))-.5))
+                collision |= np.linalg.norm(position-peer_end, axis=1) < limit
         remaining = np.linalg.norm(position-goal, axis=1)
         # Clearance penalty decays rapidly; wide fixed safety bands would close
         # physically usable doors. Negative clearance has a hard rejection.

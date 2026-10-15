@@ -3,7 +3,7 @@ param(
     [string]$Action = 'Run',
     [string]$Map = 'Map01',
     [string]$Layout = 'historic',
-    [string]$Version = 'v13_1',
+    [string]$Version = 'v13_3',
     [string]$File,
     [int]$Seed = 12345,
     [switch]$Headless,
@@ -30,13 +30,13 @@ try {
             & $swarmPython @runArgs
         }
         'Replay' {
-            $replayArgs = @('scripts/play_replay.py','--version',$Version,'--map',$Map,'--layout',$Layout)
+            $replayArgs = @('scripts/play_replay.py','--version',$Version,'--map',$Map,'--layout',$Layout,'--seed',"$Seed")
             if ($List) { $replayArgs += '--list' }
             if ($File) { $replayArgs += @('--file',$File) }
             & $swarmPython @replayArgs
         }
         'Scores' {
-            if (-not $File) { $File = 'evaluation/v13_1_20261012' }
+            if (-not $File) { $File = 'evaluation/v13_3_20261015/standard_final' }
             & $swarmPython scripts/summarize_scores.py $File
         }
         'MapEditor' { & $swarmPython -m swarm_rescue.tools.map_wall_editor }
@@ -48,11 +48,8 @@ try {
         'Check' { & $swarmPython scripts/check_submission.py }
         'Smoke' { & $swarmPython scripts/smoke_algorithm_upgrade.py --algorithm v13 --planner astar --steps 120 }
         'Test' {
-            $tests = @('test_algorithm_upgrade','test_advanced_upgrade','test_v13_upgrade','test_return_navigation',
-                'test_task_progress','test_carrier_recovery','test_bomb_tracking','test_negative_observation',
-                'test_peer_yield','test_online_navigation','test_shared_frontier','test_mapping_during_rescue',
-                'test_online_mapping','test_ground_truth_in_control','test_score_manager','test_state_recording')
-            $testArgs = @('-m','pytest') + @($tests | ForEach-Object { "tests/$_.py" }) + @('-q','-p','no:cacheprovider','-W','ignore')
+            $testArgs = @('scripts/run_tests.py')
+            if ($Suite) { $testArgs += '--full' }
             & $swarmPython @testArgs
         }
     }

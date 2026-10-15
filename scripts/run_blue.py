@@ -61,7 +61,7 @@ def run_case(map_name, layout, bombs, seed, batch, headless):
                "cls=drone_class_for_mode('rescue'); print('CONTROLLER',inspect.getfile(cls),flush=True); "
                f'random.seed({seed}); np.random.seed({seed}); sys.argv={args!r}; '
                "runpy.run_module('swarm_rescue.launcher',run_name='__main__')")
-    identity = {'version': 'v13.1', 'map': map_name, 'layout': layout, 'seed': seed,
+    identity = {'version': 'v13.3', 'map': map_name, 'layout': layout, 'seed': seed,
                 'source_sha256': source_hash(), 'bombs_sha256': digest(bombs), 'options': DEFAULTS,
                 'sensor_backend': 'shader_requested', 'zones': zones}
     print(f'RUN {map_name} / {layout} / seed={seed}', flush=True)
@@ -116,7 +116,7 @@ def main():
     for _, _, path in tasks:
         if not path.is_file():
             parser.error(f'Bomb file not found: {path}')
-    batch = ROOT / 'results' / ('v13_1_' + datetime.now().strftime('%Y%m%d_%H%M%S_%f'))
+    batch = ROOT / 'results' / ('v13_3_' + datetime.now().strftime('%Y%m%d_%H%M%S_%f'))
     batch.mkdir(parents=True)
     locked_hash = source_hash()
     rows = []

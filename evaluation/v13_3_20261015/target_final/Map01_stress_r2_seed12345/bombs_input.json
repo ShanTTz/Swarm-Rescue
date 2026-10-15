@@ -1,0 +1,72 @@
+{
+  "map_name": "Map01",
+  "zones_config": [],
+  "generator": {
+    "seed": 20261081,
+    "profile": "stress_far_wall_five_pairs",
+    "nav_clearance": 20,
+    "connectivity": 4,
+    "pair_distance_range": [
+      26,
+      30
+    ],
+    "anchor_spacing": 110,
+    "wall_clearance_range": [
+      20,
+      36
+    ],
+    "selection": "geometry rank; frozen before all outcomes; not a proven worst case"
+  },
+  "bombs": [
+    {
+      "x": 581.0,
+      "y": -371.0,
+      "theta": 1.539993
+    },
+    {
+      "x": 554.0,
+      "y": -371.0,
+      "theta": -0.487885
+    },
+    {
+      "x": 443.0,
+      "y": -371.0,
+      "theta": -1.70317
+    },
+    {
+      "x": 416.0,
+      "y": -371.0,
+      "theta": -2.496554
+    },
+    {
+      "x": 596.0,
+      "y": -251.0,
+      "theta": -1.439983
+    },
+    {
+      "x": 596.0,
+      "y": -281.0,
+      "theta": -2.890908
+    },
+    {
+      "x": 311.0,
+      "y": -326.0,
+      "theta": -1.587132
+    },
+    {
+      "x": 311.0,
+      "y": -356.0,
+      "theta": 0.03164
+    },
+    {
+      "x": 596.0,
+      "y": -113.0,
+      "theta": -0.117119
+    },
+    {
+      "x": 596.0,
+      "y": -143.0,
+      "theta": 2.38729
+    }
+  ]
+}

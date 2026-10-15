@@ -51,7 +51,9 @@ def test_fresh_recovery_beats_old_discovery_and_remote_times_do_not_refresh():
 
 
 def test_motion_and_grasping_stay_on_validated_baseline():
-    for name in ('_rollout_toward', '_move_toward', '_should_enable_grasper'):
+    # Rollout now redirects an empty drone to a traffic refuge; its collision
+    # controller and all non-conflicting goals remain inherited (traffic tests).
+    for name in ('_move_toward', '_should_enable_grasper'):
         assert getattr(MyDroneRescueV13, name) is getattr(MyDroneRescueV12, name)
     obj, _, _ = fixture()
     obj._lidar_blocked_steps = 5

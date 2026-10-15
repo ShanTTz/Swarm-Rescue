@@ -1,0 +1,22 @@
+{
+  "version": "v13.3",
+  "source_sha256": "c137b493ec95a6611c11490c9e7b9c408c4fbc4e0f47dec00135fb35fe852ee2",
+  "source_file_count": 153,
+  "raw_rounds_checked": 43,
+  "raw_rounds_full_disposal": 43,
+  "standard_rounds": 15,
+  "standard_mean": 95.384,
+  "index_replay_hashes_checked": 96,
+  "current_replays_final_bombs_empty": 37,
+  "committed": false,
+  "pushed": false,
+  "sync_verified": true,
+  "submission_check_passed": true,
+  "full_tests_passed": 384,
+  "full_test_seconds": 26.63,
+  "core_tests_passed": 180,
+  "core_test_seconds": 5.2,
+  "checked_at": "2026-10-15T13:33:21.968326",
+  "backup": "C:\\Users\\25923\\Documents\\Codex\\2026-09-16\\x20\\work\\releases\\v13_3_20261015\\pre_sync",
+  "controller_import": "C:/Users/25923/Desktop/Swarm-Rescue/src/swarm_rescue/solutions/upgrade/controller_v13.py"
+}

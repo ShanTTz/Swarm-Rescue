@@ -1,0 +1,69 @@
+{
+  "release": "blue-v13.2-20261015",
+  "version": "v13.2",
+  "algorithm": "v13",
+  "planner": "astar",
+  "adoption_date": "2026-10-15",
+  "supersedes": "blue-v13.1-20261012",
+  "source_sha256": "78abaa8372c52942c6785d8f8697ff014a1fe4157f9c4cf44328d3e3f1c04263",
+  "changed_source_files": [
+    "src/swarm_rescue/solutions/upgrade/controller_v13.py",
+    "src/swarm_rescue/solutions/upgrade/disposal_navigation.py"
+  ],
+  "no_prior": true,
+  "evaluation": "evaluation/v13_2_stability_20261015",
+  "summary": {
+    "source_sha256": "78abaa8372c52942c6785d8f8697ff014a1fe4157f9c4cf44328d3e3f1c04263",
+    "runs": 39,
+    "full": 39,
+    "map1_matrix_passed": 15,
+    "paired": 15,
+    "reported": 5,
+    "pressure": 4,
+    "baseline_paired_mean": 93.36133333333333,
+    "candidate_paired_mean": 95.27733333333333,
+    "baseline_paired_health": 81.65333333333334,
+    "candidate_paired_health": 82.61333333333333,
+    "all_required_complete": true,
+    "changed_source_files": [
+      "src/swarm_rescue/solutions/upgrade/controller_v13.py",
+      "src/swarm_rescue/solutions/upgrade/disposal_navigation.py"
+    ]
+  },
+  "five_map_equal_weight_means": [
+    [
+      "Map01",
+      82.19333333333333,
+      90.86666666666667
+    ],
+    [
+      "Map02",
+      96.74666666666667,
+      96.66666666666667
+    ],
+    [
+      "Map03",
+      94.94666666666667,
+      95.52
+    ],
+    [
+      "Map04",
+      96.89333333333333,
+      97.05333333333333
+    ],
+    [
+      "Map05",
+      96.02666666666666,
+      96.28
+    ]
+  ],
+  "related_tests_passed": 143,
+  "full_tests_passed": 347,
+  "included_current_replays": 36,
+  "submission_check_passed": true,
+  "backup": "C:\\Users\\25923\\Documents\\Codex\\2026-09-16\\x20\\work\\releases\\v13_2_20261015\\pre_sync",
+  "special_zones_tested": false,
+  "committed": false,
+  "pushed": false,
+  "remaining_limitation": "Finite sampled layouts/seeds on Map01-05, no guarantee for arbitrary maps or special zones."
+}

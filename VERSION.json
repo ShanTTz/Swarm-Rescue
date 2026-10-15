@@ -1,35 +1,8 @@
 {
-  "version": "v13.1",
-  "date": "2026-10-09",
+  "version": "v13.3",
+  "date": "2026-10-15",
   "algorithm": "v13",
   "planner": "astar",
-  "source_sha256": "c476fcaa6b93a3142e4c54303597bab562268700f4d9411475d19d4dc74b1345",
-  "original_source_sha256": "da60f8ce1f81aff87e0981be89dc482da06e8c9a919938d927a9927191492c0f",
-  "selected_policy": "bomb centre approximation; original hard vacancy",
-  "baseline": {
-    "matches": 4,
-    "disposed": 40,
-    "full": 4,
-    "destroyed": 0,
-    "mean_score": 91.86,
-    "mean_health": 59.3
-  },
-  "candidate": {
-    "matches": 4,
-    "disposed": 40,
-    "full": 4,
-    "destroyed": 0,
-    "mean_score": 93.83,
-    "mean_health": 69.15
-  },
-  "changes": [
-    "Approximate bomb centres from public semantic surface observations",
-    "Stabilize inputs to existing Hungarian tracking and task allocation"
-  ],
-  "optional_trials_enabled": false,
-  "peer_sweep": false,
-  "peer_soft": false,
-  "bomb_center": true,
-  "report": "docs/04_版本与评测.md",
-  "status": "validated on four representative layout/seed pairs; no universal generalization claim"
+  "source_sha256": "c137b493ec95a6611c11490c9e7b9c408c4fbc4e0f47dec00135fb35fe852ee2",
+  "report": "docs/08_避让修复验证结果.md"
 }

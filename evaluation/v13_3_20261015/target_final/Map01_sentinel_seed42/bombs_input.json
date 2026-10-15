@@ -1,0 +1,20 @@
+{
+  "map_name": "Map01",
+  "zones_config": [],
+  "generator": {
+    "source": "team006_260929_00h27min32s recording frame 0",
+    "purpose": "exact-layout stabilization sentinel"
+  },
+  "bombs": [
+    {"x": -513.26, "y": -245.04, "theta": 0.0},
+    {"x": -280.81, "y": 296.54, "theta": 0.0},
+    {"x": -486.38, "y": -254.56, "theta": 0.0},
+    {"x": -585.43, "y": 145.32, "theta": 0.0},
+    {"x": -509.24, "y": 168.63, "theta": 0.0},
+    {"x": -602.33, "y": -315.79, "theta": 0.0},
+    {"x": -132.43, "y": 377.58, "theta": 0.0},
+    {"x": -411.20, "y": -324.71, "theta": 0.0},
+    {"x": -292.81, "y": 190.17, "theta": 0.0},
+    {"x": -602.62, "y": -61.52, "theta": 0.0}
+  ]
+}

@@ -1,10 +1,15 @@
 """v13 repair: uncertain pickup hints accelerate stalled-task recovery."""
 import math
 import os
+from collections import deque
+import numpy as np
 
 from swarm_rescue.solutions.upgrade.controller_v12 import MyDroneRescueV12
 from swarm_rescue.simulation.ray_sensors.drone_semantic_sensor import DroneSemanticSensor
 from swarm_rescue.solutions.upgrade.portal_navigation import PortalApproachPlanner
+from swarm_rescue.solutions.upgrade.disposal_navigation import DisposalFootprint
+from swarm_rescue.solutions.upgrade.carrier_traffic import CarrierRightOfWay, EmptyCongestionRecovery
+from swarm_rescue.solutions.upgrade.navigation import plan_occupancy_path
 
 
 class MyDroneRescueV13(MyDroneRescueV12):
@@ -31,6 +36,179 @@ class MyDroneRescueV13(MyDroneRescueV12):
         self._trajectory.peer_sweep = os.environ.get('SWARM_RESCUE_V13_PEER_SWEEP', '0') == '1'
         self._trajectory.peer_soft = os.environ.get('SWARM_RESCUE_V13_PEER_SOFT', '0') == '1'
         self._bomb_center_enabled = os.environ.get('SWARM_RESCUE_V13_BOMB_CENTER', '1') == '1'
+        self._disposal_footprint = DisposalFootprint(self.size_area) if self.size_area else None
+        self._disposal_avoid_active = False
+        self._disposal_motion_window = deque(maxlen=13)
+        self._payload_motion_window = deque(maxlen=9)
+        self._payload_wide_route = False
+        self._opening_scout_released = False
+        self._opening_scout_goal = self._patrol_route[2] if len(self._patrol_route) >= 3 else None
+        self._carrier_traffic = CarrierRightOfWay()
+        self._empty_traffic = EmptyCongestionRecovery()
+        self._traffic_motion_goal = None
+        self._traffic_checked_step = -1
+        self._traffic_standby = False
+
+    def _control_step(self):
+        cmd = super()._control_step()
+        step = int(self.elapsed_timestep)
+        # Idle/standby/near-pickup branches may not call the rollout at all.
+        if self._traffic_checked_step != step:
+            target = self._traffic_target()
+            if target is not None:
+                self._traffic_rollout(target,cmd,True)
+        if self._carrier_traffic.owner is not None and not self.grasped_bombs():
+            cmd['grasper'] = 0
+        if self._empty_traffic.target is not None and not self.grasped_bombs():
+            cmd['grasper'] = 0
+        if getattr(self,'_traffic_standby',False) and not self.grasped_bombs():
+            cmd['grasper'] = 0
+        return cmd
+
+    def _rollout_toward(self, x, y, cmd):
+        self._traffic_motion_goal = (float(x), float(y))
+        target = self._traffic_target()
+        result=self._traffic_rollout(target if target is not None else (x,y),cmd,target is not None)
+        # Reaching a temporary refuge is not arrival at the original task.
+        return False if target is not None and result is not None else result
+
+    def _traffic_rollout(self, target, cmd, escaping):
+        critic=getattr(self,'_trajectory',None)
+        if critic is None:
+            return super()._rollout_toward(*target,cmd)
+        previous=critic.escape_peers
+        critic.escape_peers=bool(escaping and not self.grasped_bombs())
+        try:
+            return super()._rollout_toward(*target,cmd)
+        finally:
+            critic.escape_peers=previous
+
+    def _traffic_target(self):
+        self._traffic_standby=False
+        step = self._traffic_checked_step = int(self.elapsed_timestep)
+        position, heading = self.measured_gps_position(), self.measured_compass_angle()
+        if position is None or heading is None or not self._pose_estimate.can_map:
+            self._carrier_traffic.clear()
+            self._empty_traffic.clear()
+            return None
+        if self.grasped_bombs():
+            self._carrier_traffic.clear()
+            self._empty_traffic.clear()
+            return None
+        goals = {}
+        for _, message in self.communicator.received_messages:
+            if not isinstance(message, dict): continue
+            goal, seen, owner = message.get('traffic_goal_v1'), message.get('step'), message.get('id')
+            if not isinstance(owner,int) or not isinstance(seen,int) or not 0 <= step-seen <= 6: continue
+            if isinstance(goal,(tuple,list)) and len(goal)==2:
+                try:
+                    point=tuple(map(float,goal))
+                    if all(math.isfinite(v) for v in point): goals[owner]=point
+                except (TypeError,ValueError,OverflowError): pass
+        previous=self._carrier_traffic.owner
+        target=self._carrier_traffic.choose(tuple(map(float,position)),int(self.identifier or 0),
+                   bool(self.grasped_bombs()),step,self._peer_state,goals,self._traffic_segment_free,
+                   own_goal=self._traffic_motion_goal,eligible=self._traffic_eligible_carriers())
+        if self._carrier_traffic.owner != previous:
+            self._diagnostic_event('traffic_yield', peer=self._carrier_traffic.owner, target=target,
+                                   carrier_goal=goals.get(self._carrier_traffic.owner))
+            if previous is not None:
+                self._nav_path=[]
+                self._nav_target=None
+        if target is not None:
+            self._empty_traffic.clear()
+            return target
+        if not self._empty_escape_enabled():
+            self._empty_traffic.clear()
+            return None
+        previous_escape=self._empty_traffic.target
+        col=int(round(position[0]+self.size_area[0]/2))
+        row=int(round(self.size_area[1]/2-position[1]))
+        wall_near=bool(np.any(self._online_obstacles[max(0,row-22):row+23,max(0,col-22):col+23]))
+        visible=any(obj.entity_type==DroneSemanticSensor.TypeEntity.BOMB and not obj.grasped and obj.distance<55
+                    for obj in self.semantic_values() or ())
+        target=self._empty_traffic.choose(tuple(map(float,position)),int(self.identifier or 0),False,
+                   int(self.drone_health),step,self._peer_state,wall_near,visible,
+                   self._traffic_motion_goal,self._traffic_segment_free)
+        if previous_escape is None and target is not None:
+            self._diagnostic_event('empty_congestion_escape', target=target, wall_near=wall_near)
+        elif previous_escape is not None and target is None:
+            self._nav_path=[]
+            self._nav_target=None
+        if target is None and self._traffic_can_standby():
+            self._traffic_standby=True
+            return tuple(map(float,position))
+        return target
+
+    def _traffic_can_standby(self):
+        if self.grasped_bombs() or not self._physical_loads_accounted():
+            return False
+        if any(obj.entity_type==DroneSemanticSensor.TypeEntity.BOMB and not obj.grasped
+               for obj in self.semantic_values() or ()):
+            return False
+        values=self.lidar_values()
+        if values is None:
+            return False
+        values=np.asarray(values,dtype=float)
+        valid=np.isfinite(values)&(values>0)
+        if not np.any(valid) or float(np.min(values[valid]))<60:
+            return False
+        position=self.measured_gps_position()
+        if position is None:
+            return False
+        step=int(self.elapsed_timestep)
+        return not any(owner!=int(self.identifier or 0) and loaded and health>0
+                       and 0<=step-seen<=6 and math.dist(position,point)<120
+                       for owner,(point,health,seen,_,loaded,_) in self._peer_state.items())
+
+    def _traffic_eligible_carriers(self):
+        if self._max_steps>2000:
+            return None
+        if self._known_disposal is None or not self.size_area:
+            return set()
+        # Near-home crossings in short missions are already handled by the
+        # original delivery policy. Avoid disrupting rapid pickup/search there;
+        # use the new queue arbitration on the long remote transport leg.
+        distance=.5*max(self.size_area)
+        return {owner for owner,(point,_,_,_,loaded,_) in self._peer_state.items()
+                if loaded and math.dist(point,self._known_disposal)>distance}
+
+    def _empty_escape_enabled(self):
+        if self._max_steps>2000:
+            return True
+        # Preserve short-deadline scouting until every outstanding load has a
+        # physical carrier. This gates an optional escape, never mission end.
+        return self._physical_loads_accounted()
+
+    def _physical_loads_accounted(self):
+        step=int(self.elapsed_timestep)
+        delivered=sum(max(0.,value) for value in self._team_deliveries.values())
+        carrying=int(bool(self.grasped_bombs()))
+        carrying+=sum(owner!=int(self.identifier or 0) and health>0 and loaded
+                      and 0<=step-seen<=4
+                      for owner,(_,health,seen,_,loaded,_) in self._peer_state.items())
+        return delivered+carrying>=self._EXPECTED_BOMBS-.01
+
+    def _traffic_segment_free(self, start, target):
+        heading=self.measured_compass_angle()
+        ranges,angles=self.lidar_values(),self.lidar_rays_angles()
+        if heading is None or ranges is None or angles is None: return False
+        direction=math.atan2(target[1]-start[1],target[0]-start[0])-heading
+        ranges,angles=np.asarray(ranges,dtype=float),np.asarray(angles,dtype=float)
+        valid=np.isfinite(ranges)&(ranges>0)&(np.abs(np.arctan2(np.sin(angles-direction),np.cos(angles-direction)))<.14)
+        length=math.dist(start,target)
+        if not np.any(valid) or float(np.min(ranges[valid]))<length+16: return False
+        footprint=self._disposal_footprint
+        if footprint and footprint.crosses(start,[target]): return False
+        grid=self._online_obstacles
+        delta=(target[0]-start[0])/length,(target[1]-start[1])/length
+        points=np.asarray([(start[0]+t*(target[0]-start[0])-delta[1]*offset,
+                            start[1]+t*(target[1]-start[1])+delta[0]*offset)
+                           for t in np.linspace(0,1,max(3,int(length/4))) for offset in (-13,0,13)])
+        cols=np.rint(points[:,0]+self.size_area[0]/2).astype(int)
+        rows=np.rint(self.size_area[1]/2-points[:,1]).astype(int)
+        if np.any(cols<0) or np.any(cols>=grid.shape[1]) or np.any(rows<0) or np.any(rows>=grid.shape[0]): return False
+        return not bool(np.any(grid[rows,cols]))
 
     def _semantic_to_world(self, detection):
         point = super()._semantic_to_world(detection)
@@ -100,7 +278,17 @@ class MyDroneRescueV13(MyDroneRescueV12):
         # it. Only real disposal rewards can mark the mission complete.
         return self._all_remaining_attached() or super()._should_wait_for_carriers()
 
-    def _plan_navigation(self, start, target):
+    def _plan_with_disposal_layer(self, start, target):
+        if self.grasped_bombs() and getattr(self, '_payload_wide_route', False) and self._planner_backend == 'astar':
+            # The load projects beyond the drone. A path clear for its centre
+            # can still be impossible for the local controller at a wall end.
+            # Prefer room for the load; retain the original planner when a
+            # narrow passage is the only observed route.
+            for cell in (16, 8):
+                route = plan_occupancy_path(self.size_area, self._online_obstacles,
+                    start, target, clearance=32, cell_size=cell)
+                if route:
+                    return route
         route = super()._plan_navigation(start, target)
         if (not self._portal_enabled or self.grasped_bombs()
                 or self._operational_stage not in ('chase', 'approach_shared', 'recover')
@@ -160,6 +348,9 @@ class MyDroneRescueV13(MyDroneRescueV12):
         # made fresh simply because another vehicle rebroadcast them.
         message['pickup_vacancies_v13'] = tuple((token, point, at)
             for token, (point, at) in sorted(self._vacated_targets.items()))
+        footprint = getattr(self, '_disposal_footprint', None)
+        message['disposal_surface_v1'] = footprint.snapshot() if footprint else ()
+        message['traffic_goal_v1'] = self._traffic_motion_goal
         return message
 
     def _merge_team_status(self):
@@ -203,8 +394,53 @@ class MyDroneRescueV13(MyDroneRescueV12):
                 matches.append((completed, point, old_point, observed, at))
         return min(matches, key=lambda item: (item[0] != token, -item[4])) if matches else None
 
+    def _opening_scout_active(self):
+        # The existing coverage policy gives the last two drones opening
+        # probe legs. Keep a small scout reserve on short-deadline missions
+        # instead of letting every scout turn back with an early local load.
+        if (getattr(self, '_max_steps', 5000) > 2000
+                or getattr(self, '_team_size', 1) < 6
+                or int(self.identifier or 0) < self._team_size-2
+                or getattr(self, '_opening_scout_released', False)):
+            return False
+        sector_seen = False
+        goal = getattr(self, '_opening_scout_goal', None)
+        if self._patrol_index >= 2 and goal is not None:
+            position = self.measured_gps_position()
+            if position is not None:
+                gap = math.dist(position, goal)
+                # Finish distinct coverage sectors, rather than both releasing
+                # at their shared transit waypoint. Stop before pushing into
+                # a bomb lying at the probe point itself.
+                sector_seen = gap <= 50 or (gap <= 180 and any(
+                    obj.entity_type == DroneSemanticSensor.TypeEntity.BOMB
+                    and not obj.grasped and math.isfinite(float(obj.distance)) and obj.distance <= 140
+                    for obj in self.semantic_values() or ()))
+        if (int(self.elapsed_timestep) >= int(self._max_steps*.45)
+                or self._patrol_index >= 3 or sector_seen):
+            self._opening_scout_released = True
+            self._diagnostic_event('opening_scout_complete', leg=self._patrol_index)
+            return False
+        return True
+
+    def _own_offer(self):
+        return {} if self._opening_scout_active() else super()._own_offer()
+
+    def _can_claim_target(self, token, point):
+        return False if self._opening_scout_active() else super()._can_claim_target(token, point)
+
+    def _control_explore(self, cmd):
+        if self._opening_scout_active():
+            return self._control_patrol(cmd)
+        return super()._control_explore(cmd)
+
     def _target_bid(self, owner, position, health, point):
-        cost = super()._target_bid(owner, position, health, point)
+        # Above half health, geometry determines assignment. A single timed
+        # collision must not add an abrupt 55px penalty at health 45 and
+        # reshuffle otherwise capable searchers. Keep the original low-health
+        # risk model and retirement rules for vulnerable drones.
+        bid_health = 50 if health >= 25 else health
+        cost = super()._target_bid(owner, position, bid_health, point)
         if self._vacancy_policy != 'soft' or owner != int(self.identifier or 0):
             return cost
         # A nearby pickup is an uncertain association, not proof that another
@@ -264,3 +500,111 @@ class MyDroneRescueV13(MyDroneRescueV12):
             return False
         self._diagnostic_event('vacancy_no_progress', token=token, advanced=state.advanced)
         return True
+
+
+
+    def _update_online_obstacles(self):
+        super()._update_online_obstacles()
+        footprint = getattr(self, '_disposal_footprint', None)
+        step = int(self.elapsed_timestep)
+        if footprint is None or step % 8 != int(self.identifier or 0) % 8:
+            return
+        position, heading = self.measured_gps_position(), self.measured_compass_angle()
+        trusted = not hasattr(self, '_pose_estimate') or self._pose_estimate.can_map
+        if trusted and position is not None and heading is not None:
+            for obj in self.semantic_values() or ():
+                if obj.entity_type != DroneSemanticSensor.TypeEntity.DISPOSAL_CENTER:
+                    continue
+                if not math.isfinite(float(obj.distance)) or not math.isfinite(float(obj.angle)):
+                    continue
+                bearing = float(heading) + float(obj.angle)
+                footprint.add((position[0] + obj.distance*math.cos(bearing),
+                               position[1] + obj.distance*math.sin(bearing)))
+        for _, message in self.communicator.received_messages:
+            if not isinstance(message, dict):
+                continue
+            timestamp = message.get('step')
+            if not isinstance(timestamp, int) or not 0 <= step-timestamp <= 16:
+                continue
+            points = message.get('disposal_surface_v1', ())
+            if isinstance(points, (tuple, list)):
+                for point in points[:32]:
+                    footprint.add(point)
+        changed = footprint.rebuild()
+        if self.grasped_bombs():
+            self._disposal_avoid_active = False
+            self._disposal_motion_window.clear()
+            if position is not None and trusted:
+                window = self._payload_motion_window
+                window.append((step, tuple(map(float, position))))
+                if len(window) == window.maxlen and not self._payload_wide_route:
+                    earliest, start = window[0]
+                    spread = max(math.dist(start, point) for _, point in window)
+                    # Keep original carrying and delivery until a distant
+                    # waypoint has demonstrably trapped the loaded drone.
+                    visible_pad = any(obj.entity_type == DroneSemanticSensor.TypeEntity.DISPOSAL_CENTER
+                                      for obj in self.semantic_values() or ())
+                    if (not visible_pad and step-earliest >= 56 and spread < 64 and math.dist(start, position) < 20
+                            and self._known_disposal is not None
+                            and math.dist(position, self._known_disposal) > 80
+                            and self._carry_exit_steps_left <= 0):
+                        self._payload_wide_route = True
+                        self._nav_path = []
+                        self._nav_target = None
+                        self._diagnostic_event('payload_clearance_replan', spread=spread)
+            return
+        self._payload_motion_window.clear()
+        self._payload_wide_route = False
+        if position is not None and trusted and footprint.points:
+            window = self._disposal_motion_window
+            window.append((step, tuple(map(float, position))))
+            if not self._disposal_avoid_active and len(window) == window.maxlen:
+                earliest, start = window[0]
+                spread = max(math.dist(start, point) for _, point in window)
+                blocked = (self._nav_target is not None and footprint.near(self._nav_target)
+                           or footprint.crosses(position, self._nav_path))
+                delivered = sum(max(0., value) for value in self._team_deliveries.values())
+                schedule_safe = self._max_steps > 2000 or delivered >= self._EXPECTED_BOMBS-2
+                if (schedule_safe and step-earliest >= 88 and spread < 42 and blocked
+                        and self._operational_stage in ('search', 'approach_shared', 'recover')):
+                    self._disposal_avoid_active = True
+                    self._nav_path = []
+                    self._nav_target = None
+                    self._diagnostic_event('disposal_stall_replan', spread=spread)
+        if changed and self._disposal_avoid_active and position is not None:
+            if footprint.crosses(position, self._nav_path):
+                self._nav_path = []
+                self._nav_target = None
+
+    def _control_patrol(self, cmd):
+        footprint = getattr(self, '_disposal_footprint', None)
+        if footprint and getattr(self, '_disposal_avoid_active', False) and not self.grasped_bombs():
+            index = self._patrol_index % len(self._patrol_route)
+            target = self._patrol_route[index]
+            position = self.measured_gps_position()
+            if position is not None and self._nav_target != target and footprint.near(target, 32):
+                route = self._plan_navigation(tuple(map(float, position)), target)
+                if route and math.dist(route[-1], target) > 10:
+                    targets = list(self._patrol_route)
+                    targets[index] = route[-1]
+                    self._patrol_route = tuple(targets)
+                    self._nav_path = route
+                    self._nav_target = route[-1]
+                    self._patrol_target_age = 0
+                    self._diagnostic_event('disposal_patrol_project', target=target, projected=route[-1])
+        return super()._control_patrol(cmd)
+
+
+    def _plan_navigation(self, start, target):
+        footprint = getattr(self, '_disposal_footprint', None)
+        route = self._plan_with_disposal_layer(start, target)
+        if (footprint is None or not footprint.revision or self.grasped_bombs()
+                or not getattr(self, '_disposal_avoid_active', False)
+                or not (footprint.crosses(start, route) or footprint.near(target))):
+            return route
+        original = self._online_obstacles
+        self._online_obstacles = np.maximum(original, footprint.mask)
+        try:
+            return self._plan_with_disposal_layer(start, target)
+        finally:
+            self._online_obstacles = original

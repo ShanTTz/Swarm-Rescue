@@ -1,0 +1,777 @@
+[
+  {
+    "map": "Map01",
+    "baseline": {
+      "frames": 1805,
+      "final_active_bombs": 1,
+      "all_health_loss": 108,
+      "empty_health_loss": 77,
+      "longest_damaging_empty_stall": 286,
+      "longest_loaded_stall_near_empty": 159,
+      "empty_stalls": [
+        {
+          "drone": 8,
+          "start": 1390,
+          "end": 1675,
+          "frames": 286,
+          "health_loss": 2
+        },
+        {
+          "drone": 1,
+          "start": 215,
+          "end": 481,
+          "frames": 267,
+          "health_loss": 1
+        },
+        {
+          "drone": 1,
+          "start": 698,
+          "end": 930,
+          "frames": 233,
+          "health_loss": 9
+        },
+        {
+          "drone": 0,
+          "start": 781,
+          "end": 964,
+          "frames": 184,
+          "health_loss": 5
+        },
+        {
+          "drone": 8,
+          "start": 72,
+          "end": 235,
+          "frames": 164,
+          "health_loss": 2
+        },
+        {
+          "drone": 9,
+          "start": 1381,
+          "end": 1531,
+          "frames": 151,
+          "health_loss": 3
+        },
+        {
+          "drone": 9,
+          "start": 70,
+          "end": 208,
+          "frames": 139,
+          "health_loss": 3
+        },
+        {
+          "drone": 9,
+          "start": 1548,
+          "end": 1677,
+          "frames": 130,
+          "health_loss": 1
+        },
+        {
+          "drone": 2,
+          "start": 502,
+          "end": 610,
+          "frames": 109,
+          "health_loss": 4
+        },
+        {
+          "drone": 7,
+          "start": 1063,
+          "end": 1163,
+          "frames": 101,
+          "health_loss": 3
+        },
+        {
+          "drone": 3,
+          "start": 1236,
+          "end": 1335,
+          "frames": 100,
+          "health_loss": 1
+        }
+      ],
+      "carrier_stalls": [
+        {
+          "carrier": 8,
+          "empty": 1,
+          "start": 749,
+          "end": 907,
+          "frames": 159,
+          "health_loss": 5
+        },
+        {
+          "carrier": 8,
+          "empty": 0,
+          "start": 824,
+          "end": 907,
+          "frames": 84,
+          "health_loss": 3
+        },
+        {
+          "carrier": 0,
+          "empty": 6,
+          "start": 1433,
+          "end": 1515,
+          "frames": 83,
+          "health_loss": 2
+        },
+        {
+          "carrier": 0,
+          "empty": 8,
+          "start": 1387,
+          "end": 1464,
+          "frames": 78,
+          "health_loss": 1
+        },
+        {
+          "carrier": 8,
+          "empty": 2,
+          "start": 749,
+          "end": 821,
+          "frames": 73,
+          "health_loss": 2
+        },
+        {
+          "carrier": 9,
+          "empty": 1,
+          "start": 756,
+          "end": 814,
+          "frames": 59,
+          "health_loss": 2
+        },
+        {
+          "carrier": 9,
+          "empty": 2,
+          "start": 756,
+          "end": 812,
+          "frames": 57,
+          "health_loss": 2
+        },
+        {
+          "carrier": 8,
+          "empty": 0,
+          "start": 770,
+          "end": 805,
+          "frames": 36,
+          "health_loss": 1
+        }
+      ]
+    },
+    "candidate": {
+      "frames": 1854,
+      "final_active_bombs": 0,
+      "all_health_loss": 108,
+      "empty_health_loss": 94,
+      "longest_damaging_empty_stall": 297,
+      "longest_loaded_stall_near_empty": 0,
+      "empty_stalls": [
+        {
+          "drone": 7,
+          "start": 1449,
+          "end": 1745,
+          "frames": 297,
+          "health_loss": 2
+        },
+        {
+          "drone": 9,
+          "start": 1285,
+          "end": 1581,
+          "frames": 297,
+          "health_loss": 2
+        },
+        {
+          "drone": 1,
+          "start": 215,
+          "end": 481,
+          "frames": 267,
+          "health_loss": 1
+        },
+        {
+          "drone": 8,
+          "start": 1537,
+          "end": 1771,
+          "frames": 235,
+          "health_loss": 6
+        },
+        {
+          "drone": 8,
+          "start": 1324,
+          "end": 1541,
+          "frames": 218,
+          "health_loss": 1
+        },
+        {
+          "drone": 9,
+          "start": 1612,
+          "end": 1803,
+          "frames": 192,
+          "health_loss": 2
+        },
+        {
+          "drone": 4,
+          "start": 1364,
+          "end": 1544,
+          "frames": 181,
+          "health_loss": 3
+        },
+        {
+          "drone": 4,
+          "start": 1677,
+          "end": 1855,
+          "frames": 179,
+          "health_loss": 3
+        },
+        {
+          "drone": 5,
+          "start": 1527,
+          "end": 1700,
+          "frames": 174,
+          "health_loss": 1
+        },
+        {
+          "drone": 8,
+          "start": 72,
+          "end": 235,
+          "frames": 164,
+          "health_loss": 2
+        },
+        {
+          "drone": 1,
+          "start": 699,
+          "end": 861,
+          "frames": 163,
+          "health_loss": 4
+        },
+        {
+          "drone": 0,
+          "start": 812,
+          "end": 969,
+          "frames": 158,
+          "health_loss": 1
+        },
+        {
+          "drone": 3,
+          "start": 1596,
+          "end": 1744,
+          "frames": 149,
+          "health_loss": 3
+        },
+        {
+          "drone": 3,
+          "start": 1483,
+          "end": 1626,
+          "frames": 144,
+          "health_loss": 2
+        },
+        {
+          "drone": 6,
+          "start": 1595,
+          "end": 1736,
+          "frames": 142,
+          "health_loss": 2
+        },
+        {
+          "drone": 9,
+          "start": 70,
+          "end": 208,
+          "frames": 139,
+          "health_loss": 3
+        },
+        {
+          "drone": 4,
+          "start": 1607,
+          "end": 1726,
+          "frames": 120,
+          "health_loss": 3
+        },
+        {
+          "drone": 2,
+          "start": 502,
+          "end": 610,
+          "frames": 109,
+          "health_loss": 4
+        },
+        {
+          "drone": 7,
+          "start": 1749,
+          "end": 1855,
+          "frames": 107,
+          "health_loss": 1
+        },
+        {
+          "drone": 1,
+          "start": 784,
+          "end": 889,
+          "frames": 106,
+          "health_loss": 3
+        },
+        {
+          "drone": 5,
+          "start": 1227,
+          "end": 1326,
+          "frames": 100,
+          "health_loss": 1
+        }
+      ],
+      "carrier_stalls": []
+    }
+  },
+  {
+    "map": "Map03",
+    "baseline": {
+      "frames": 1976,
+      "final_active_bombs": 0,
+      "all_health_loss": 229,
+      "empty_health_loss": 165,
+      "longest_damaging_empty_stall": 331,
+      "longest_loaded_stall_near_empty": 143,
+      "empty_stalls": [
+        {
+          "drone": 7,
+          "start": 1647,
+          "end": 1977,
+          "frames": 331,
+          "health_loss": 7
+        },
+        {
+          "drone": 4,
+          "start": 1395,
+          "end": 1706,
+          "frames": 312,
+          "health_loss": 3
+        },
+        {
+          "drone": 1,
+          "start": 1522,
+          "end": 1804,
+          "frames": 283,
+          "health_loss": 1
+        },
+        {
+          "drone": 0,
+          "start": 1113,
+          "end": 1385,
+          "frames": 273,
+          "health_loss": 2
+        },
+        {
+          "drone": 8,
+          "start": 1143,
+          "end": 1393,
+          "frames": 251,
+          "health_loss": 1
+        },
+        {
+          "drone": 3,
+          "start": 22,
+          "end": 257,
+          "frames": 236,
+          "health_loss": 2
+        },
+        {
+          "drone": 5,
+          "start": 1127,
+          "end": 1343,
+          "frames": 217,
+          "health_loss": 3
+        },
+        {
+          "drone": 1,
+          "start": 1120,
+          "end": 1334,
+          "frames": 215,
+          "health_loss": 9
+        },
+        {
+          "drone": 4,
+          "start": 1109,
+          "end": 1317,
+          "frames": 209,
+          "health_loss": 7
+        },
+        {
+          "drone": 8,
+          "start": 743,
+          "end": 937,
+          "frames": 195,
+          "health_loss": 10
+        },
+        {
+          "drone": 2,
+          "start": 1702,
+          "end": 1893,
+          "frames": 192,
+          "health_loss": 2
+        },
+        {
+          "drone": 6,
+          "start": 1582,
+          "end": 1760,
+          "frames": 179,
+          "health_loss": 4
+        },
+        {
+          "drone": 6,
+          "start": 1799,
+          "end": 1977,
+          "frames": 179,
+          "health_loss": 1
+        },
+        {
+          "drone": 1,
+          "start": 1411,
+          "end": 1573,
+          "frames": 163,
+          "health_loss": 3
+        },
+        {
+          "drone": 5,
+          "start": 1786,
+          "end": 1940,
+          "frames": 155,
+          "health_loss": 3
+        },
+        {
+          "drone": 6,
+          "start": 1203,
+          "end": 1351,
+          "frames": 149,
+          "health_loss": 5
+        },
+        {
+          "drone": 1,
+          "start": 7,
+          "end": 152,
+          "frames": 146,
+          "health_loss": 3
+        },
+        {
+          "drone": 9,
+          "start": 1638,
+          "end": 1768,
+          "frames": 131,
+          "health_loss": 2
+        },
+        {
+          "drone": 8,
+          "start": 1803,
+          "end": 1932,
+          "frames": 130,
+          "health_loss": 3
+        },
+        {
+          "drone": 8,
+          "start": 1464,
+          "end": 1588,
+          "frames": 125,
+          "health_loss": 1
+        },
+        {
+          "drone": 4,
+          "start": 2,
+          "end": 118,
+          "frames": 117,
+          "health_loss": 3
+        },
+        {
+          "drone": 6,
+          "start": 485,
+          "end": 600,
+          "frames": 116,
+          "health_loss": 3
+        },
+        {
+          "drone": 2,
+          "start": 854,
+          "end": 954,
+          "frames": 101,
+          "health_loss": 4
+        }
+      ],
+      "carrier_stalls": [
+        {
+          "carrier": 4,
+          "empty": 8,
+          "start": 763,
+          "end": 905,
+          "frames": 143,
+          "health_loss": 7
+        },
+        {
+          "carrier": 1,
+          "empty": 8,
+          "start": 755,
+          "end": 896,
+          "frames": 142,
+          "health_loss": 1
+        },
+        {
+          "carrier": 5,
+          "empty": 8,
+          "start": 826,
+          "end": 918,
+          "frames": 93,
+          "health_loss": 0
+        },
+        {
+          "carrier": 7,
+          "empty": 1,
+          "start": 1211,
+          "end": 1278,
+          "frames": 68,
+          "health_loss": 3
+        },
+        {
+          "carrier": 7,
+          "empty": 5,
+          "start": 1211,
+          "end": 1278,
+          "frames": 68,
+          "health_loss": 3
+        },
+        {
+          "carrier": 7,
+          "empty": 6,
+          "start": 1211,
+          "end": 1278,
+          "frames": 68,
+          "health_loss": 3
+        },
+        {
+          "carrier": 9,
+          "empty": 1,
+          "start": 1216,
+          "end": 1280,
+          "frames": 65,
+          "health_loss": 3
+        },
+        {
+          "carrier": 9,
+          "empty": 4,
+          "start": 1216,
+          "end": 1280,
+          "frames": 65,
+          "health_loss": 3
+        },
+        {
+          "carrier": 9,
+          "empty": 6,
+          "start": 1216,
+          "end": 1280,
+          "frames": 65,
+          "health_loss": 3
+        },
+        {
+          "carrier": 1,
+          "empty": 7,
+          "start": 755,
+          "end": 808,
+          "frames": 54,
+          "health_loss": 0
+        },
+        {
+          "carrier": 4,
+          "empty": 7,
+          "start": 763,
+          "end": 814,
+          "frames": 52,
+          "health_loss": 3
+        },
+        {
+          "carrier": 9,
+          "empty": 5,
+          "start": 1232,
+          "end": 1280,
+          "frames": 49,
+          "health_loss": 2
+        },
+        {
+          "carrier": 4,
+          "empty": 2,
+          "start": 860,
+          "end": 905,
+          "frames": 46,
+          "health_loss": 3
+        },
+        {
+          "carrier": 1,
+          "empty": 2,
+          "start": 858,
+          "end": 896,
+          "frames": 39,
+          "health_loss": 1
+        },
+        {
+          "carrier": 5,
+          "empty": 2,
+          "start": 892,
+          "end": 918,
+          "frames": 27,
+          "health_loss": 0
+        },
+        {
+          "carrier": 7,
+          "empty": 4,
+          "start": 1211,
+          "end": 1237,
+          "frames": 27,
+          "health_loss": 2
+        },
+        {
+          "carrier": 5,
+          "empty": 7,
+          "start": 788,
+          "end": 812,
+          "frames": 25,
+          "health_loss": 1
+        },
+        {
+          "carrier": 9,
+          "empty": 0,
+          "start": 1018,
+          "end": 1042,
+          "frames": 25,
+          "health_loss": 0
+        }
+      ]
+    },
+    "candidate": {
+      "frames": 1835,
+      "final_active_bombs": 0,
+      "all_health_loss": 129,
+      "empty_health_loss": 104,
+      "longest_damaging_empty_stall": 274,
+      "longest_loaded_stall_near_empty": 84,
+      "empty_stalls": [
+        {
+          "drone": 0,
+          "start": 1563,
+          "end": 1836,
+          "frames": 274,
+          "health_loss": 5
+        },
+        {
+          "drone": 1,
+          "start": 1145,
+          "end": 1378,
+          "frames": 234,
+          "health_loss": 4
+        },
+        {
+          "drone": 3,
+          "start": 60,
+          "end": 281,
+          "frames": 222,
+          "health_loss": 1
+        },
+        {
+          "drone": 9,
+          "start": 943,
+          "end": 1136,
+          "frames": 194,
+          "health_loss": 3
+        },
+        {
+          "drone": 9,
+          "start": 1513,
+          "end": 1701,
+          "frames": 189,
+          "health_loss": 1
+        },
+        {
+          "drone": 0,
+          "start": 1267,
+          "end": 1449,
+          "frames": 183,
+          "health_loss": 1
+        },
+        {
+          "drone": 9,
+          "start": 448,
+          "end": 618,
+          "frames": 171,
+          "health_loss": 1
+        },
+        {
+          "drone": 3,
+          "start": 1402,
+          "end": 1539,
+          "frames": 138,
+          "health_loss": 3
+        },
+        {
+          "drone": 3,
+          "start": 533,
+          "end": 661,
+          "frames": 129,
+          "health_loss": 1
+        },
+        {
+          "drone": 5,
+          "start": 947,
+          "end": 1063,
+          "frames": 117,
+          "health_loss": 1
+        },
+        {
+          "drone": 8,
+          "start": 564,
+          "end": 676,
+          "frames": 113,
+          "health_loss": 1
+        },
+        {
+          "drone": 9,
+          "start": 1724,
+          "end": 1836,
+          "frames": 113,
+          "health_loss": 2
+        },
+        {
+          "drone": 1,
+          "start": 7,
+          "end": 114,
+          "frames": 108,
+          "health_loss": 2
+        },
+        {
+          "drone": 3,
+          "start": 1732,
+          "end": 1836,
+          "frames": 105,
+          "health_loss": 1
+        },
+        {
+          "drone": 7,
+          "start": 887,
+          "end": 987,
+          "frames": 101,
+          "health_loss": 1
+        }
+      ],
+      "carrier_stalls": [
+        {
+          "carrier": 8,
+          "empty": 1,
+          "start": 1334,
+          "end": 1417,
+          "frames": 84,
+          "health_loss": 0
+        },
+        {
+          "carrier": 1,
+          "empty": 3,
+          "start": 558,
+          "end": 593,
+          "frames": 36,
+          "health_loss": 0
+        },
+        {
+          "carrier": 8,
+          "empty": 3,
+          "start": 1389,
+          "end": 1421,
+          "frames": 33,
+          "health_loss": 0
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,112 @@
+[
+  {
+    "case": "Map01_reported_r1_seed20263081",
+    "baseline_score": 82.34,
+    "candidate_score": 98.44,
+    "delta": 16.1,
+    "baseline_disposed": 10,
+    "candidate_disposed": 10,
+    "baseline_health": 85.6,
+    "candidate_health": 92.2,
+    "baseline_dwell": {
+      "empty_near_frames": 4300,
+      "longest_empty_near": 1049,
+      "empty_near_health_loss": 17,
+      "all_health_loss": 72
+    },
+    "candidate_dwell": {
+      "empty_near_frames": 652,
+      "longest_empty_near": 235,
+      "empty_near_health_loss": 3,
+      "all_health_loss": 39
+    }
+  },
+  {
+    "case": "Map02_reported_r1_seed20263081",
+    "baseline_score": 98.76,
+    "candidate_score": 98.8,
+    "delta": 0.04,
+    "baseline_disposed": 10,
+    "candidate_disposed": 10,
+    "baseline_health": 93.8,
+    "candidate_health": 94.0,
+    "baseline_dwell": {
+      "empty_near_frames": 756,
+      "longest_empty_near": 199,
+      "empty_near_health_loss": 3,
+      "all_health_loss": 31
+    },
+    "candidate_dwell": {
+      "empty_near_frames": 725,
+      "longest_empty_near": 184,
+      "empty_near_health_loss": 4,
+      "all_health_loss": 30
+    }
+  },
+  {
+    "case": "Map03_reported_r1_seed20261013",
+    "baseline_score": 96.88,
+    "candidate_score": 97.0,
+    "delta": 0.12,
+    "baseline_disposed": 10,
+    "candidate_disposed": 10,
+    "baseline_health": 84.4,
+    "candidate_health": 85.0,
+    "baseline_dwell": {
+      "empty_near_frames": 2529,
+      "longest_empty_near": 488,
+      "empty_near_health_loss": 13,
+      "all_health_loss": 78
+    },
+    "candidate_dwell": {
+      "empty_near_frames": 1797,
+      "longest_empty_near": 257,
+      "empty_near_health_loss": 17,
+      "all_health_loss": 75
+    }
+  },
+  {
+    "case": "Map04_reported_r1_seed20261013",
+    "baseline_score": 95.68,
+    "candidate_score": 96.68,
+    "delta": 1.0,
+    "baseline_disposed": 10,
+    "candidate_disposed": 10,
+    "baseline_health": 78.4,
+    "candidate_health": 83.4,
+    "baseline_dwell": {
+      "empty_near_frames": 1939,
+      "longest_empty_near": 360,
+      "empty_near_health_loss": 8,
+      "all_health_loss": 108
+    },
+    "candidate_dwell": {
+      "empty_near_frames": 1025,
+      "longest_empty_near": 239,
+      "empty_near_health_loss": 0,
+      "all_health_loss": 83
+    }
+  },
+  {
+    "case": "Map05_reported_r1_seed20261013",
+    "baseline_score": 94.68,
+    "candidate_score": 95.16,
+    "delta": 0.48,
+    "baseline_disposed": 10,
+    "candidate_disposed": 10,
+    "baseline_health": 73.4,
+    "candidate_health": 75.8,
+    "baseline_dwell": {
+      "empty_near_frames": 4642,
+      "longest_empty_near": 1226,
+      "empty_near_health_loss": 45,
+      "all_health_loss": 133
+    },
+    "candidate_dwell": {
+      "empty_near_frames": 2358,
+      "longest_empty_near": 358,
+      "empty_near_health_loss": 20,
+      "all_health_loss": 121
+    }
+  }
+]

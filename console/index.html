@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Swarm-Rescue 控制台</title>
+<style>
+:root{
+  --bg:#0f1420;--panel:#171e2e;--panel2:#1d2740;--line:#2a3654;--txt:#dbe4f5;--dim:#8fa0c2;
+  --acc:#3f8cff;--ok:#3ecf8e;--warn:#f5b04c;--bad:#f0546a;--mono:Consolas,'Courier New',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font:14px/1.6 "Segoe UI","Microsoft YaHei",sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--panel);border-bottom:1px solid var(--line)}
+header h1{font-size:17px;font-weight:600}
+header .env{color:var(--dim);font-size:12px;font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px}
+.dot.ok{background:var(--ok)}.dot.run{background:var(--warn);animation:pulse 1s infinite}.dot.bad{background:var(--bad)}.dot.idle{background:#55627e}
+@keyframes pulse{50%{opacity:.4}}
+nav{display:flex;gap:4px;padding:8px 14px 0;background:var(--panel)}
+nav button{background:none;border:1px solid transparent;border-bottom:none;color:var(--dim);padding:8px 18px;font-size:14px;cursor:pointer;border-radius:8px 8px 0 0}
+nav button.on{background:var(--bg);color:var(--txt);border-color:var(--line);font-weight:600}
+main{flex:1;overflow:auto;padding:16px 18px 90px}
+section{display:none;max-width:1280px;margin:0 auto}
+section.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.card h2{font-size:14px;margin-bottom:10px;color:var(--acc);font-weight:600}
+.card h3{font-size:13px;margin:10px 0 6px;color:var(--dim);font-weight:600}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:3px}
+.field label{font-size:12px;color:var(--dim)}
+select,input[type=text],input[type=number],textarea{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:6px;padding:6px 9px;font-size:13px;outline:none}
+select:focus,input:focus,textarea:focus{border-color:var(--acc)}
+textarea{font-family:var(--mono);font-size:12px}
+button.act{background:var(--acc);border:none;color:#fff;padding:8px 18px;border-radius:7px;cursor:pointer;font-size:14px;font-weight:600}
+button.act:hover{filter:brightness(1.15)}
+button.act:disabled{opacity:.45;cursor:not-allowed}
+button.ghost{background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:7px 14px;border-radius:7px;cursor:pointer;font-size:13px}
+button.ghost:hover{border-color:var(--acc)}
+button.danger{background:var(--bad)}
+button.small{padding:3px 10px;font-size:12px;border-radius:5px}
+.chk{display:flex;align-items:center;gap:6px;color:var(--txt);font-size:13px;padding-bottom:8px}
+.hint{color:var(--dim);font-size:12px;margin-top:8px}
+.hint b{color:var(--warn)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{color:var(--dim);text-align:left;font-weight:500;padding:5px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:5px 8px;border-bottom:1px solid rgba(42,54,84,.45);white-space:nowrap}
+tr:hover td{background:rgba(63,140,255,.06)}
+.tag{display:inline-block;padding:1px 8px;border-radius:9px;font-size:11px;background:var(--panel2);border:1px solid var(--line);color:var(--dim)}
+.tag.ok{color:var(--ok);border-color:var(--ok)}
+.tag.bad{color:var(--bad);border-color:var(--bad)}
+.maps{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.mcard{background:var(--panel2);border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.mcard .cv{height:150px;background:#fff;display:flex;align-items:center;justify-content:center}
+.mcard canvas,.mcard img{max-width:100%;max-height:100%;object-fit:contain}
+.mcard .info{padding:8px 10px}
+.mcard .nm{font-weight:600;font-size:14px}
+.mcard .meta{color:var(--dim);font-size:11.5px;font-family:var(--mono)}
+.mcard .ops{display:flex;gap:6px;padding:0 10px 10px}
+#dock{position:fixed;left:0;right:0;bottom:0;height:230px;background:#0b101b;border-top:1px solid var(--line);display:flex;flex-direction:column;transition:height .15s}
+#dock.min{height:34px}
+#dockbar{display:flex;align-items:center;gap:6px;padding:3px 10px;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto;min-height:34px}
+#dockbar .jtab{display:flex;align-items:center;gap:6px;padding:3px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:var(--dim);white-space:nowrap;border:1px solid transparent}
+#dockbar .jtab.on{background:var(--panel2);color:var(--txt);border-color:var(--line)}
+#dockbar .spacer{flex:1}
+#logview{flex:1;overflow:auto;padding:8px 12px;font-family:var(--mono);font-size:12px;white-space:pre-wrap;word-break:break-all;color:#b8c7e6}
+#logview .err{color:var(--bad)}
+.modal{position:fixed;inset:0;background:rgba(5,8,14,.72);display:none;align-items:center;justify-content:center;z-index:50}
+.modal.on{display:flex}
+.modal .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;max-width:760px;max-height:82vh;overflow:auto}
+.steps{background:#0b101b;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-family:var(--mono);font-size:12px;white-space:pre-wrap;color:#b8c7e6;max-height:260px;overflow:auto;margin-top:8px}
+.toast{position:fixed;top:16px;right:16px;z-index:99;display:flex;flex-direction:column;gap:8px}
+.toast div{background:var(--panel2);border:1px solid var(--acc);border-radius:8px;padding:9px 14px;font-size:13px;max-width:420px;box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.toast div.bad{border-color:var(--bad)}
+.toast div.ok{border-color:var(--ok)}
+details summary{cursor:pointer;color:var(--acc);font-size:13px;padding:4px 0}
+.filelabel{font-size:12px;color:var(--dim)}
+input[type=file]{color:var(--dim);font-size:12px;max-width:260px}
+.big b{font-size:15px;color:var(--ok)}
+</style>
+</head>
+<body>
+<header>
+  <h1>🐝 Swarm-Rescue 控制台</h1>
+  <span id="pyenv" class="env"></span>
+  <span id="headstat"><span class="dot idle"></span>空闲</span>
+</header>
+<nav id="tabs">
+  <button data-s="run" class="on">▶ 运行</button>
+  <button data-s="replay">📺 回放</button>
+  <button data-s="map">🗺 地图</button>
+  <button data-s="results">📊 结果</button>
+  <button data-s="tools">🧪 工具</button>
+</nav>
+<main>
+
+<!-- ============ 运行 ============ -->
+<section id="s-run" class="on">
+  <div class="card">
+    <h2>运行蓝方</h2>
+    <div class="row">
+      <div class="field"><label>地图</label><select id="r-map" style="min-width:150px"></select></div>
+      <div class="field"><label>炸弹布局</label><select id="r-layout" style="min-width:170px"></select></div>
+      <div class="field"><label>种子 seed</label><input id="r-seed" type="number" value="12345" style="width:110px"></div>
+      <label class="chk"><input id="r-headless" type="checkbox"> 无头模式（不开仿真窗口）</label>
+      <label class="chk"><input id="r-suite" type="checkbox"> 批量15局（Map01-05×三布局）</label>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <div class="field" style="flex:1;min-width:280px"><label>炸弹文件（留空=按地图/布局自动选择）</label>
+        <select id="r-bombs" style="width:100%"></select></div>
+      <button class="ghost" onclick="refreshBombs()">↻ 刷新炸弹列表</button>
+      <button class="ghost" onclick="openBombEditor()">🎯 炸弹编辑器</button>
+      <label class="ghost filelabel" style="display:inline-flex;align-items:center;gap:6px">📤 上传炸弹JSON
+        <input type="file" id="r-bombfile" accept=".json" style="max-width:170px" onchange="uploadBombs(this)"></label>
+      <label class="ghost filelabel" style="display:inline-flex;align-items:center;gap:6px">✅ 校验炸弹JSON
+        <input type="file" id="r-bombcheck" accept=".json" style="max-width:170px" onchange="validateBombs(this)"></label>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button class="act" id="r-go" onclick="startRun()">▶ 开始运行</button>
+      <button class="act danger" id="r-stop" onclick="stopRun()" disabled>⏹ 停止</button>
+      <button class="ghost" onclick="openFolder('results')">📁 打开结果目录</button>
+    </div>
+    <div class="hint" id="r-hint"></div>
+    <div class="hint">说明：窗口运行会弹出仿真画面；<b>Map06-08</b> 使用 map_data 下的固定挑战布局文件；自定义/新地图需选择对应炸弹文件（恰好10枚）。新增地图会改变源码哈希，属正常现象。</div>
+  </div>
+  <div class="card" id="r-last" style="display:none"><h2>最近一次运行</h2><div id="r-lastbody"></div></div>
+</section>
+
+<!-- ============ 回放 ============ -->
+<section id="s-replay">
+  <div class="card">
+    <h2>回放列表 <span class="tag" id="rp-count"></span></h2>
+    <div class="row">
+      <div class="field"><label>来源</label><select id="rp-src"><option value="">全部</option><option value="bundled">打包回放</option><option value="results">运行生成</option></select></div>
+      <div class="field"><label>版本</label><select id="rp-ver"><option value="">全部</option></select></div>
+      <div class="field"><label>地图</label><select id="rp-map"><option value="">全部</option></select></div>
+      <div class="field"><label>搜索（布局/文件名）</label><input type="text" id="rp-q" style="width:170px"></div>
+      <button class="ghost" onclick="loadReplays(true)">↻ 刷新</button>
+    </div>
+    <div style="max-height:56vh;overflow:auto;margin-top:10px">
+      <table id="rp-table"><thead><tr>
+        <th>状态</th><th>来源</th><th>版本</th><th>地图</th><th>布局</th><th>seed</th><th>归位</th><th>分数</th><th>文件</th><th></th>
+      </tr></thead><tbody></tbody></table>
+    </div>
+    <div class="hint">回放在独立窗口打开：<b>空格</b> 播放/暂停，←→ 跳30帧，↑↓ 调速，Home/End 首末帧，<b>Q</b> 退出。第一帧处于暂停。</div>
+  </div>
+</section>
+
+<!-- ============ 地图 ============ -->
+<section id="s-map">
+  <div class="card">
+    <h2>已注册地图 <span class="tag" id="mp-count"></span>
+      <button class="ghost small" onclick="tool('walleditor')">🎨 墙体编辑器</button>
+      <button class="ghost small" onclick="loadMaps()">↻ 重新扫描</button></h2>
+    <div class="maps" id="mp-grid"></div>
+  </div>
+  <div class="card">
+    <h2>新增地图</h2>
+    <div class="row">
+      <label class="ghost filelabel" style="display:inline-flex;align-items:center;gap:6px">📂 选择编辑器JSON
+        <input type="file" id="ma-file" accept=".json" onchange="loadMapFile(this)"></label>
+      <div class="field"><label>地图名（如 11、maze1）</label><input type="text" id="ma-name" style="width:130px" placeholder="11"></div>
+      <label class="chk"><input id="ma-over" type="checkbox"> 覆盖同名文件</label>
+      <button class="act" onclick="addMap()">🏗 生成并注册</button>
+      <button class="ghost" onclick="useTemplate()">用模板填充</button>
+    </div>
+    <div class="row" style="margin-top:10px;align-items:flex-start">
+      <div class="field" style="flex:1"><label>编辑器JSON内容</label>
+        <textarea id="ma-json" rows="10" style="width:100%" placeholder='{"version":1,"canvas":{...},"elements":[...]}'></textarea></div>
+      <div class="field"><label>预览</label><canvas id="ma-cv" width="340" height="260" style="background:#fff;border-radius:8px;border:1px solid var(--line)"></canvas></div>
+    </div>
+    <div class="steps" id="ma-steps" style="display:none"></div>
+    <div class="hint">流程：①选/贴JSON（可用 run.ps1 MapEditor 或地图页编辑器绘制）→ ②命名后点「生成并注册」：自动生成 map_XX.py、注册 launcher、写 config/rescue_XX.yml → ③生成炸弹布局（炸弹编辑器或上传）→ ④回运行页运行。时限默认7200步/1440秒，请按比赛公布值改 map_XX.py。</div>
+  </div>
+</section>
+
+<!-- ============ 结果 ============ -->
+<section id="s-results">
+  <div class="card">
+    <h2>运行结果批次 <button class="ghost small" onclick="loadResults(true)">↻ 刷新</button>
+      <button class="ghost small" onclick="openFolder('results')">📁 打开目录</button></h2>
+    <div id="rs-list"></div>
+  </div>
+</section>
+
+<!-- ============ 工具 ============ -->
+<section id="s-tools">
+  <div class="card">
+    <h2>工具</h2>
+    <div class="row">
+      <button class="act" onclick="tool('test')">🧪 相关回归（约180项）</button>
+      <button class="ghost" onclick="tool('test_full')">全量测试（384项）</button>
+      <button class="ghost" onclick="tool('check')">提交检查 Check</button>
+      <button class="ghost" onclick="tool('smoke')">冒烟 Smoke（120步）</button>
+      <button class="ghost" onclick="tool('walleditor')">🎨 墙体编辑器</button>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <div class="field" style="flex:1"><label>分数复算（结果目录或CSV路径）</label>
+        <input type="text" id="t-score-path" style="width:100%" placeholder="results/本次目录 或 evaluation/v13_3_20261015/standard_final"></div>
+      <button class="act" onclick="toolScores()">🧮 复算分数</button>
+    </div>
+    <div class="hint" id="t-env"></div>
+  </div>
+</section>
+</main>
+
+<!-- 日志坞 -->
+<div id="dock">
+  <div id="dockbar">
+    <span style="color:var(--dim);font-size:12px;padding-right:4px">控制台</span>
+    <span id="jobtabs" style="display:flex;gap:6px;overflow-x:auto"></span>
+    <span class="spacer"></span>
+    <button class="ghost small" id="dock-stop" onclick="stopActive()" style="display:none">⏹ 停止</button>
+    <button class="ghost small" onclick="document.getElementById('dock').classList.toggle('min')">▾/▴</button>
+  </div>
+  <div id="logview"></div>
+</div>
+
+<div class="modal" id="modal" onclick="if(event.target===this)this.classList.remove('on')">
+  <div class="box"><div id="modal-body"></div>
+  <div style="text-align:right;margin-top:10px"><button class="ghost" onclick="document.getElementById('modal').classList.remove('on')">关闭</button></div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let BOOT=null, jobs={}, activeJob=null, logOffset=0, runJobId=null, replayRows=[];
+
+function toast(msg,cls=''){const d=document.createElement('div');d.className=cls;d.innerHTML=msg;$('#toast').appendChild(d);setTimeout(()=>d.remove(),5200);}
+function modal(html){$('#modal-body').innerHTML=html;$('#modal').classList.add('on');}
+async function api(path,body){
+  const opt=body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{};
+  const r=await fetch(path,opt); let j=null; try{j=await r.json()}catch(e){j={error:'HTTP '+r.status}}
+  if(!r.ok){const m=j&&(j.error||j.msg)||('HTTP '+r.status);toast(esc(m),'bad');throw new Error(m);}
+  return j;
+}
+
+/* ---------- tabs ---------- */
+$$('#tabs button').forEach(b=>b.onclick=()=>{switchTab(b.dataset.s)});
+function switchTab(s){$$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.s===s));
+  $$('main section').forEach(x=>x.classList.toggle('on',x.id==='s-'+s));}
+
+/* ---------- bootstrap ---------- */
+async function boot(){
+  BOOT=await api('/api/bootstrap');
+  $('#pyenv').textContent='python: '+BOOT.python+'　·　'+BOOT.root;
+  $('#t-env').textContent='Python: '+BOOT.python+'\n项目根: '+BOOT.root+'\n已注册地图: '+BOOT.maps.map(m=>m.cls).join(', ');
+  const sel=$('#r-map'); sel.innerHTML='';
+  BOOT.maps.forEach(m=>{const o=document.createElement('option');o.value=m.cls;
+    o.textContent=m.cls+(m.size?`（${m.size[0]}×${m.size[1]}，${m.steps??'?'}步/${m.walltime??'?'}s）`:'');sel.appendChild(o);});
+  $('#r-layout').innerHTML=BOOT.layouts.map(l=>`<option>${l}</option>`).join('');
+  (BOOT.jobs||[]).forEach(j=>{jobs[j.id]=j;if(j.status==='running')activeJob=j.id;});
+  refreshBombs(); renderJobTabs(); updateHead();
+  (BOOT.jobs||[]).filter(j=>j.status==='running').forEach(j=>openLog(j.id));
+  loadReplays(); loadResults();
+  setInterval(pollJobs,2000);
+}
+function updateHead(){
+  const running=Object.values(jobs).filter(j=>j.status==='running');
+  $('#headstat').innerHTML=running.length?`<span class="dot run"></span>运行中 ${running.length} 个`:`<span class="dot ok"></span>空闲`;
+}
+
+/* ---------- bombs ---------- */
+function refreshBombs(){const s=$('#r-bombs');const cur=s.value;s.innerHTML='<option value="">（自动：按地图/布局选默认文件）</option>';
+  (BOOT.bombs||[]).forEach(b=>{const o=document.createElement('option');o.value=b.path;
+    o.textContent=`${b.name}（${b.map_name}，${b.count}枚）`;s.appendChild(o);});if(cur)s.value=cur;filterBombs();}
+function filterBombs(){const m=$('#r-map').value;[...$('#r-bombs').options].forEach((o,i)=>{
+  if(i===0)return;const b=BOOT.bombs[i-1];o.hidden=b.map_name!==m;});}
+function mapChanged(){filterBombs();
+  $('#r-hint').textContent='已选 '+$('#r-map').value+'：'+($('#r-bombs').selectedOptions[0]?.textContent||'');}
+async function uploadBombs(inp){const f=inp.files[0];if(!f)return;
+  const txt=await f.text();let data;try{data=JSON.parse(txt)}catch(e){toast('JSON解析失败','bad');return}
+  const name=f.name.replace(/[^\w.\-]/g,'_');
+  try{const r=await api('/api/bombs/upload',{name,json:txt});
+    toast(`已上传 ${r.path}（${r.map_name}，${r.count}枚）`,'ok');BOOT.bombs.push({path:r.path,name,map_name:r.map_name,count:r.count});refreshBombs();
+    [...$('#r-bombs').options].forEach(o=>{if(o.value===r.path)$('#r-bombs').value=r.path;});
+  }catch(e){}
+  inp.value='';}
+async function validateBombs(inp){const f=inp.files[0];if(!f)return;const txt=await f.text();
+  try{const r=await api('/api/bombs/validate',{path:'fixtures/bombs/'+f.name,json:txt,map:$('#r-map').value});
+    modal(`<h3>炸弹JSON校验</h3><p>map_name：<b>${esc(r.map_name)}</b></p><p>炸弹数量：<b>${r.count}</b>（需10枚）</p><p>特殊区配置：${r.zones} 项</p><p>${r.ok?'<span class="tag ok">校验通过</span>':'<span class="tag bad">校验未通过（地图名或数量不符）</span>'}</p>`);
+  }catch(e){}inp.value='';}
+async function openBombEditor(){const m=$('#r-map').value;
+  const r=await api('/api/bombs/editor',{map:m});
+  toast(esc(r.msg)+'<br>输出：'+esc(r.output),'ok');}
+
+/* ---------- run ---------- */
+async function startRun(){
+  const body={map:$('#r-map').value,layout:$('#r-layout').value,seed:+$('#r-seed').value||12345,
+    headless:$('#r-headless').checked,suite:$('#r-suite').checked,bombs:$('#r-bombs').value};
+  if(!body.suite&&!body.map){toast('请选择地图','bad');return}
+  const r=await api('/api/run',body);runJobId=r.job;openLog(r.job);toast('已启动：'+esc(r.label),'ok');
+}
+async function stopRun(){if(!runJobId)return;const r=await api('/api/stop',{id:runJobId});toast(esc(r.msg)||'已发送停止');}
+function openFolder(p){api('/api/openfolder',{path:p});}
+
+/* ---------- replays ---------- */
+async function loadReplays(refresh){
+  if(refresh||!replayRows.length){replayRows=(await api('/api/replays')).rows;}
+  const src=$('#rp-src').value,ver=$('#rp-ver').value,map=$('#rp-map').value,q=$('#rp-q').value.toLowerCase();
+  const vers=[...new Set(replayRows.map(r=>r.version))],maps=[...new Set(replayRows.map(r=>r.map))];
+  $('#rp-ver').innerHTML='<option value="">全部</option>'+vers.map(v=>`<option ${v===ver?'selected':''}>${esc(v)}</option>`).join('');
+  $('#rp-map').innerHTML='<option value="">全部</option>'+maps.map(v=>`<option ${v===map?'selected':''}>${esc(v)}</option>`).join('');
+  const rows=replayRows.filter(r=>(!src||r.source===src)&&(!ver||r.version===ver)&&(!map||r.map===map)
+    &&(!q||(r.layout+' '+r.path).toLowerCase().includes(q)));
+  $('#rp-count').textContent=rows.length+' 局';
+  $('#rp-table tbody').innerHTML=rows.slice(0,600).map(r=>`<tr>
+    <td>${r.exists?'<span class="tag ok">可用</span>':'<span class="tag bad">缺失</span>'}</td>
+    <td>${r.source==='bundled'?'打包':'生成'}</td><td>${esc(r.version)}</td><td>${esc(r.map)}</td>
+    <td>${esc(r.layout)}</td><td>${r.seed??''}</td><td>${r.disposed??''}/10</td><td>${r.score??''}</td>
+    <td style="max-width:340px;overflow:hidden;text-overflow:ellipsis" title="${esc(r.path)}">${esc(r.path)}</td>
+    <td><button class="ghost small" ${r.exists?'':'disabled'} onclick="play('${esc(r.path)}')">▶ 回放</button></td></tr>`).join('');
+}
+function play(p){api('/api/replay',{path:p}).then(r=>toast(esc(r.msg),'ok'));}
+
+/* ---------- maps ---------- */
+async function renderMaps(){
+  $('#mp-count').textContent=BOOT.maps.length+' 张';
+  $('#mp-grid').innerHTML=BOOT.maps.map((m,i)=>`<div class="mcard">
+    <div class="cv" id="mpcv${i}"></div>
+    <div class="info"><div class="nm">${esc(m.cls)}</div>
+      <div class="meta">${m.size?m.size[0]+'×'+m.size[1]:'尺寸未知'} · ${m.steps??'?'}步 / ${m.walltime??'?'}s</div></div>
+    <div class="ops">
+      <button class="ghost small" onclick="runThis('${m.cls}')">▶ 运行此图</button>
+      <button class="ghost small" onclick="bombEditorFor('${m.cls}')">🎯 炸弹编辑器</button>
+    </div></div>`).join('');
+  BOOT.maps.forEach(async (m,i)=>{
+    const host=document.getElementById('mpcv'+i);
+    if(m.preview){const img=document.createElement('img');img.src=m.preview;host.appendChild(img);}
+    else if(m.editor_json){const cv=document.createElement('canvas');cv.width=340;cv.height=200;host.appendChild(cv);
+      try{const j=await(await fetch('/api/mapjson/'+m.editor_json)).json();drawMap(j,cv);}catch(e){host.textContent='无预览';}}
+    else host.textContent='无预览（可在新增地图处上传JSON预览）';});
+}
+function drawMap(data,cv){
+  const ctx=cv.getContext('2d');const c=data.canvas||{};const W=c.width||1000,H=c.height||1000;
+  const s=Math.min(cv.width/W,cv.height/H);ctx.fillStyle=c.background==='white'?'#fff':'#111';ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.save();ctx.translate((cv.width-W*s)/2,(cv.height-H*s)/2);ctx.scale(s,s);
+  (data.elements||[]).forEach(e=>{
+    if(e.type==='line_wall'){ctx.strokeStyle=e.color||'#000';ctx.lineWidth=e.thickness||4;ctx.lineJoin='round';ctx.lineCap='round';
+      ctx.beginPath();(e.points||[]).forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));if(e.points&&e.points.length>2)ctx.closePath();ctx.stroke();}
+    else if(e.type==='rect_wall'){ctx.fillStyle=e.color||'#000';const[x1,y1]=e.top_left,[x2,y2]=e.bottom_right;ctx.fillRect(Math.min(x1,x2),Math.min(y1,y2),Math.abs(x2-x1),Math.abs(y2-y1));}
+    else if(e.type==='start_area'){ctx.fillStyle='rgba(30,144,255,.45)';rect(e);}
+    else if(e.type==='disposal_center'){ctx.fillStyle='rgba(34,139,34,.45)';rect(e);}
+    function rect(e){const[x1,y1]=e.top_left,[x2,y2]=e.bottom_right;ctx.fillRect(Math.min(x1,x2),Math.min(y1,y2),Math.abs(x2-x1),Math.abs(y2-y1));
+      ctx.strokeStyle=e.color||'#888';ctx.strokeRect(Math.min(x1,x2),Math.min(y1,y2),Math.abs(x2-x1),Math.abs(y2-y1));}
+  });ctx.restore();}
+function loadMapFile(inp){const f=inp.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{$('#ma-json').value=rd.result;if(!$('#ma-name').value)suggestName(f.name);previewJson();};rd.readAsText(f);}
+function useTemplate(){fetch('/api/mapjson/map_09.json').then(r=>r.json()).then(j=>{$('#ma-json').value=JSON.stringify(j,null,2);previewJson();}).catch(()=>toast('模板加载失败','bad'));}
+function suggestName(){const nums=BOOT.maps.map(m=>{const x=(m.module||'').match(/^map_(\d+)$/);return x?+x[1]:0;});
+  $('#ma-name').value=String(Math.max(10,...nums)+1);}
+function previewJson(){let data;try{data=JSON.parse($('#ma-json').value)}catch(e){return}
+  const cv=$('#ma-cv');cv.width=340;cv.height=260;drawMap(data,cv);}
+$('#ma-json')?.addEventListener('input',previewJson);
+async function addMap(){
+  const name=$('#ma-name').value.trim(),json=$('#ma-json').value;
+  if(!name||!json){toast('请先填写地图名并载入JSON','bad');return}
+  try{
+    const r=await api('/api/map/add',{name,json,overwrite:$('#ma-over').checked});
+    const box=$('#ma-steps');box.style.display='block';
+    box.textContent=r.steps.join('\n---\n')+'\n\n✔ '+r.msg;
+    toast(esc(r.msg),'ok');BOOT=await api('/api/bootstrap');
+    const sel=$('#r-map');sel.innerHTML='';BOOT.maps.forEach(m=>{const o=document.createElement('option');o.value=m.cls;
+      o.textContent=m.cls+(m.size?`（${m.size[0]}×${m.size[1]}，${m.steps??'?'}步/${m.walltime??'?'}s）`:'');sel.appendChild(o);});
+    filterBombs();renderMaps();
+  }catch(e){if(e.conflict)toast('同名文件已存在，勾选覆盖','bad');}
+}
+function runThis(cls){switchTab('run');$('#r-map').value=cls;filterBombs();mapChanged();}
+async function loadMaps(){try{BOOT=await api('/api/bootstrap');renderMaps();
+  const sel=$('#r-map');sel.innerHTML='';BOOT.maps.forEach(m=>{const o=document.createElement('option');o.value=m.cls;
+    o.textContent=m.cls+(m.size?`（${m.size[0]}×${m.size[1]}，${m.steps??'?'}步/${m.walltime??'?'}s）`:'');sel.appendChild(o);});
+  filterBombs();toast('已重新扫描 '+BOOT.maps.length+' 张地图','ok');}catch(e){}}
+function bombEditorFor(cls){switchTab('run');$('#r-map').value=cls;filterBombs();openBombEditor();}
+
+/* ---------- results ---------- */
+async function loadResults(refresh){
+  const bs=(await api('/api/results')).batches;
+  $('#rs-list').innerHTML=bs.length?bs.map((b,i)=>{
+    const rows=b.cases.map(c=>`<tr><td>${esc(c.map||'')}</td><td>${esc(c.layout||'')}</td><td>${c.seed??''}</td>
+      <td class="big"><b>${c.disposed??'?'}${c.disposed!=null?'/10':''}</b></td><td>${c.score??''}</td><td>${c.health??''}%</td>
+      <td>${c.time_score??''}</td><td>${c.steps??''}</td>
+      <td>${+c.crashed?'<span class="tag bad">损毁</span>':(+c.exit===0?'<span class="tag ok">完成</span>':'<span class="tag bad">退出'+esc(c.exit)+'</span>')}</td>
+      <td>${(c.replays||[]).map(rp=>`<button class="ghost small" onclick="play('${esc(rp)}')">▶</button>`).join(' ')}</td>
+      <td><button class="ghost small" onclick="openFolder('${esc(c.dir)}')">📁</button></td></tr>`).join('');
+    return `<details ${i===0?'open':''}><summary><b>${esc(b.dir)}</b>　<span class="tag">${b.cases.length} 局</span> <span class="tag">${b.mtime}</span></summary>
+      ${rows?`<table><thead><tr><th>地图</th><th>布局</th><th>seed</th><th>归位</th><th>总分</th><th>健康</th><th>时间分</th><th>步数</th><th>状态</th><th>回放</th><th>目录</th></tr></thead><tbody>${rows}</tbody></table>
+      <div style="margin-top:6px"><button class="ghost small" onclick="toolScores('${esc(b.dir)}')">🧮 复算本批分数</button></div>`
+      :'<div class="hint">本批暂无可读的 summary/metrics。</div>'}</details>`;
+  }).join(''):'<div class="hint">暂无结果。去「运行」页跑一局吧。</div>';
+}
+
+/* ---------- tools ---------- */
+async function tool(a){const r=await api('/api/tool',{action:a});openLog(r.job);toast('已启动：'+esc(r.label),'ok');}
+async function toolScores(p){p=p||$('#t-score-path').value.trim();if(!p){toast('请填写路径','bad');return}
+  const r=await api('/api/tool',{action:'scores',path:p});openLog(r.job);toast('已启动：'+esc(r.label),'ok');}
+
+/* ---------- jobs & log ---------- */
+function jobLabel(j){return j.label||j.type;}
+function renderJobTabs(){
+  const bar=$('#jobtabs');bar.innerHTML='';
+  Object.values(jobs).sort((a,b)=>b.started.localeCompare(a.started)).forEach(j=>{
+    const t=document.createElement('span');t.className='jtab'+(activeJob===j.id?' on':'');
+    t.innerHTML=`<span class="dot ${j.status==='running'?'run':j.status==='done'?'ok':'bad'}"></span>${esc(jobLabel(j))}`;
+    t.onclick=()=>openLog(j.id);bar.appendChild(t);});
+  const j=jobs[activeJob];$('#dock-stop').style.display=j&&j.status==='running'?'':'none';
+}
+function openLog(id){activeJob=id;logOffset=0;$('#logview').textContent='';$('#dock').classList.remove('min');renderJobTabs();pollLog(true);}
+async function pollJobs(){
+  try{const d=await api('/api/jobs');
+    d.jobs.forEach(j=>{const old=jobs[j.id];jobs[j.id]=j;
+      if(old&&old.status==='running'&&j.status!=='running'){
+        const res=j.result;let msg=jobLabel(j)+' → '+(j.status==='done'?'完成':'失败(退出码'+j.exit+')');
+        if(res&&res.rows&&res.rows.length){msg+='\n'+res.rows.map(r=>`${r.map}/${r.layout} seed${r.seed}: ${r.disposed}/10 分=${r.score}`).join('\n');}
+        toast(esc(msg).replace(/\n/g,'<br>'),j.status==='done'?'ok':'bad');
+        loadReplays();loadResults();}
+    });
+    updateHead();renderJobTabs();
+    if(d.jobs.some(j=>j.status==='running'))pollLog();
+  }catch(e){}
+}
+async function pollLog(force){
+  if(!activeJob)return;const j=jobs[activeJob];if(!j)return;
+  try{const r=await api('/api/log?id='+activeJob+'&offset='+logOffset);
+    if(r.dropped>0&&force)$('#logview').textContent=`（前 ${r.dropped} 行已省略）\n`;
+    if(r.lines.length){const v=$('#logview');const stick=v.scrollTop+v.clientHeight>=v.scrollHeight-30;
+      v.textContent+=r.lines.join('\n')+'\n';if(stick||force)v.scrollTop=v.scrollHeight;}
+    logOffset=r.next;jobs[activeJob]=jobs[activeJob]||{};Object.assign(jobs[activeJob],{status:r.status,exit:r.exit,result:r.result});
+    $('#dock-stop').style.display=r.status==='running'?'':'none';
+  }catch(e){}
+}
+async function stopActive(){if(!activeJob)return;const r=await api('/api/stop',{id:activeJob});toast(esc(r.msg)||'已发送停止');}
+setInterval(()=>{if(Object.values(jobs).some(j=>j.status==='running'))pollLog();},700);
+
+/* ---------- init ---------- */
+$('#r-map').addEventListener('change',mapChanged);
+$('#rp-src').addEventListener('change',()=>loadReplays());
+['rp-ver','rp-map'].forEach(id=>$('#'+id).addEventListener('change',()=>loadReplays()));
+$('#rp-q').addEventListener('input',()=>loadReplays());
+boot().then(()=>{mapChanged();renderMaps();});
+</script>
+</body>
+</html>

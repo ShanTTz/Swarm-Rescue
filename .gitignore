@@ -100,3 +100,12 @@ tests/map_score/__pycache__/
 # New local run output
 /results/
 /results_swarm_rescue/
+
+# Local test scratch data
+.test_cache/
+
+# Local web console job logs & backups
+console/logs/
+
+# Local background-job scratch data
+/.zwork/

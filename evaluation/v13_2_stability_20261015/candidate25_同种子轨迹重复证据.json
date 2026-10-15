@@ -1,0 +1,27 @@
+{
+  "drone_states": {
+    "x": true,
+    "y": true,
+    "angle": true,
+    "active": true,
+    "health": false
+  },
+  "bomb_states": {
+    "x": true,
+    "y": true,
+    "angle": true,
+    "active": true
+  },
+  "source_sha256": "78abaa8372c52942c6785d8f8697ff014a1fe4157f9c4cf44328d3e3f1c04263",
+  "same_source": true,
+  "same_input": true,
+  "seed": 12345,
+  "steps": [
+    "1138",
+    "1138"
+  ],
+  "scores": [
+    "95.36",
+    "95.40"
+  ]
+}

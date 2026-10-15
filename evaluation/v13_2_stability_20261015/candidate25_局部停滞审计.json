@@ -1,0 +1,475 @@
+{
+  "definition": "89 consecutive frames empty and within80px of pad; bounding-box diagonal<64px. Mode from logs; diagnostic heuristic, not collision truth.",
+  "rows": [
+    {
+      "map": "Map01",
+      "baseline": {
+        "stalls": [
+          {
+            "drone": 0,
+            "start_frame": 50,
+            "end_frame": 148,
+            "duration": 98,
+            "health_loss": 0
+          },
+          {
+            "drone": 0,
+            "start_frame": 154,
+            "end_frame": 268,
+            "duration": 114,
+            "health_loss": 2
+          },
+          {
+            "drone": 0,
+            "start_frame": 306,
+            "end_frame": 399,
+            "duration": 93,
+            "health_loss": 0
+          },
+          {
+            "drone": 0,
+            "start_frame": 431,
+            "end_frame": 652,
+            "duration": 221,
+            "health_loss": 1
+          },
+          {
+            "drone": 0,
+            "start_frame": 1008,
+            "end_frame": 1738,
+            "duration": 730,
+            "health_loss": 3
+          },
+          {
+            "drone": 1,
+            "start_frame": 606,
+            "end_frame": 809,
+            "duration": 203,
+            "health_loss": 0
+          },
+          {
+            "drone": 1,
+            "start_frame": 1191,
+            "end_frame": 1630,
+            "duration": 439,
+            "health_loss": 2
+          },
+          {
+            "drone": 2,
+            "start_frame": 781,
+            "end_frame": 963,
+            "duration": 182,
+            "health_loss": 0
+          },
+          {
+            "drone": 2,
+            "start_frame": 968,
+            "end_frame": 1535,
+            "duration": 567,
+            "health_loss": 1
+          },
+          {
+            "drone": 2,
+            "start_frame": 1636,
+            "end_frame": 1738,
+            "duration": 102,
+            "health_loss": 0
+          },
+          {
+            "drone": 4,
+            "start_frame": 491,
+            "end_frame": 655,
+            "duration": 164,
+            "health_loss": 0
+          },
+          {
+            "drone": 6,
+            "start_frame": 1399,
+            "end_frame": 1530,
+            "duration": 131,
+            "health_loss": 1
+          },
+          {
+            "drone": 8,
+            "start_frame": 1252,
+            "end_frame": 1627,
+            "duration": 375,
+            "health_loss": 0
+          },
+          {
+            "drone": 8,
+            "start_frame": 1625,
+            "end_frame": 1728,
+            "duration": 103,
+            "health_loss": 0
+          }
+        ],
+        "longest": 730
+      },
+      "candidate": {
+        "stalls": [],
+        "longest": 0
+      }
+    },
+    {
+      "map": "Map02",
+      "baseline": {
+        "stalls": [
+          {
+            "drone": 4,
+            "start_frame": 0,
+            "end_frame": 106,
+            "duration": 106,
+            "health_loss": 1
+          },
+          {
+            "drone": 4,
+            "start_frame": 270,
+            "end_frame": 433,
+            "duration": 163,
+            "health_loss": 0
+          },
+          {
+            "drone": 5,
+            "start_frame": 327,
+            "end_frame": 432,
+            "duration": 105,
+            "health_loss": 0
+          }
+        ],
+        "longest": 163
+      },
+      "candidate": {
+        "stalls": [
+          {
+            "drone": 4,
+            "start_frame": 0,
+            "end_frame": 106,
+            "duration": 106,
+            "health_loss": 1
+          },
+          {
+            "drone": 4,
+            "start_frame": 270,
+            "end_frame": 386,
+            "duration": 116,
+            "health_loss": 0
+          },
+          {
+            "drone": 5,
+            "start_frame": 327,
+            "end_frame": 431,
+            "duration": 104,
+            "health_loss": 0
+          }
+        ],
+        "longest": 116
+      }
+    },
+    {
+      "map": "Map03",
+      "baseline": {
+        "stalls": [
+          {
+            "drone": 1,
+            "start_frame": 5,
+            "end_frame": 487,
+            "duration": 482,
+            "health_loss": 1
+          },
+          {
+            "drone": 3,
+            "start_frame": 10,
+            "end_frame": 147,
+            "duration": 137,
+            "health_loss": 1
+          },
+          {
+            "drone": 3,
+            "start_frame": 184,
+            "end_frame": 442,
+            "duration": 258,
+            "health_loss": 2
+          },
+          {
+            "drone": 4,
+            "start_frame": 0,
+            "end_frame": 159,
+            "duration": 159,
+            "health_loss": 1
+          },
+          {
+            "drone": 4,
+            "start_frame": 145,
+            "end_frame": 411,
+            "duration": 266,
+            "health_loss": 0
+          },
+          {
+            "drone": 5,
+            "start_frame": 221,
+            "end_frame": 360,
+            "duration": 139,
+            "health_loss": 0
+          },
+          {
+            "drone": 5,
+            "start_frame": 985,
+            "end_frame": 1128,
+            "duration": 143,
+            "health_loss": 0
+          },
+          {
+            "drone": 9,
+            "start_frame": 382,
+            "end_frame": 492,
+            "duration": 110,
+            "health_loss": 0
+          }
+        ],
+        "longest": 482
+      },
+      "candidate": {
+        "stalls": [
+          {
+            "drone": 1,
+            "start_frame": 5,
+            "end_frame": 177,
+            "duration": 172,
+            "health_loss": 1
+          },
+          {
+            "drone": 3,
+            "start_frame": 10,
+            "end_frame": 175,
+            "duration": 165,
+            "health_loss": 1
+          },
+          {
+            "drone": 3,
+            "start_frame": 490,
+            "end_frame": 601,
+            "duration": 111,
+            "health_loss": 1
+          },
+          {
+            "drone": 4,
+            "start_frame": 0,
+            "end_frame": 147,
+            "duration": 147,
+            "health_loss": 1
+          },
+          {
+            "drone": 9,
+            "start_frame": 435,
+            "end_frame": 548,
+            "duration": 113,
+            "health_loss": 0
+          }
+        ],
+        "longest": 172
+      }
+    },
+    {
+      "map": "Map04",
+      "baseline": {
+        "stalls": [
+          {
+            "drone": 3,
+            "start_frame": 1507,
+            "end_frame": 1639,
+            "duration": 132,
+            "health_loss": 1
+          },
+          {
+            "drone": 4,
+            "start_frame": 48,
+            "end_frame": 233,
+            "duration": 185,
+            "health_loss": 0
+          },
+          {
+            "drone": 4,
+            "start_frame": 1344,
+            "end_frame": 1566,
+            "duration": 222,
+            "health_loss": 2
+          },
+          {
+            "drone": 5,
+            "start_frame": 979,
+            "end_frame": 1300,
+            "duration": 321,
+            "health_loss": 1
+          },
+          {
+            "drone": 5,
+            "start_frame": 1724,
+            "end_frame": 1876,
+            "duration": 152,
+            "health_loss": 0
+          },
+          {
+            "drone": 5,
+            "start_frame": 1933,
+            "end_frame": 2027,
+            "duration": 94,
+            "health_loss": 0
+          }
+        ],
+        "longest": 321
+      },
+      "candidate": {
+        "stalls": [
+          {
+            "drone": 3,
+            "start_frame": 1521,
+            "end_frame": 1643,
+            "duration": 122,
+            "health_loss": 0
+          },
+          {
+            "drone": 4,
+            "start_frame": 48,
+            "end_frame": 178,
+            "duration": 130,
+            "health_loss": 0
+          }
+        ],
+        "longest": 130
+      }
+    },
+    {
+      "map": "Map05",
+      "baseline": {
+        "stalls": [
+          {
+            "drone": 1,
+            "start_frame": 667,
+            "end_frame": 1768,
+            "duration": 1101,
+            "health_loss": 3
+          },
+          {
+            "drone": 3,
+            "start_frame": 653,
+            "end_frame": 1088,
+            "duration": 435,
+            "health_loss": 5
+          },
+          {
+            "drone": 3,
+            "start_frame": 1015,
+            "end_frame": 1108,
+            "duration": 93,
+            "health_loss": 2
+          },
+          {
+            "drone": 3,
+            "start_frame": 1093,
+            "end_frame": 1226,
+            "duration": 133,
+            "health_loss": 6
+          },
+          {
+            "drone": 3,
+            "start_frame": 1333,
+            "end_frame": 1518,
+            "duration": 185,
+            "health_loss": 6
+          },
+          {
+            "drone": 3,
+            "start_frame": 1499,
+            "end_frame": 1809,
+            "duration": 310,
+            "health_loss": 2
+          },
+          {
+            "drone": 5,
+            "start_frame": 982,
+            "end_frame": 1076,
+            "duration": 94,
+            "health_loss": 0
+          },
+          {
+            "drone": 5,
+            "start_frame": 1222,
+            "end_frame": 1493,
+            "duration": 271,
+            "health_loss": 1
+          },
+          {
+            "drone": 8,
+            "start_frame": 521,
+            "end_frame": 618,
+            "duration": 97,
+            "health_loss": 2
+          },
+          {
+            "drone": 9,
+            "start_frame": 1159,
+            "end_frame": 1376,
+            "duration": 217,
+            "health_loss": 5
+          },
+          {
+            "drone": 9,
+            "start_frame": 1321,
+            "end_frame": 1764,
+            "duration": 443,
+            "health_loss": 5
+          }
+        ],
+        "longest": 1101
+      },
+      "candidate": {
+        "stalls": [
+          {
+            "drone": 1,
+            "start_frame": 534,
+            "end_frame": 628,
+            "duration": 94,
+            "health_loss": 2
+          },
+          {
+            "drone": 2,
+            "start_frame": 1374,
+            "end_frame": 1645,
+            "duration": 271,
+            "health_loss": 0
+          },
+          {
+            "drone": 3,
+            "start_frame": 377,
+            "end_frame": 511,
+            "duration": 134,
+            "health_loss": 1
+          },
+          {
+            "drone": 3,
+            "start_frame": 1408,
+            "end_frame": 1645,
+            "duration": 237,
+            "health_loss": 0
+          },
+          {
+            "drone": 4,
+            "start_frame": 1524,
+            "end_frame": 1645,
+            "duration": 121,
+            "health_loss": 0
+          },
+          {
+            "drone": 9,
+            "start_frame": 440,
+            "end_frame": 562,
+            "duration": 122,
+            "health_loss": 2
+          }
+        ],
+        "longest": 271
+      }
+    }
+  ]
+}

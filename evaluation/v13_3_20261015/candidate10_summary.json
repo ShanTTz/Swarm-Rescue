@@ -1,0 +1,63 @@
+{
+  "candidate": "candidate10",
+  "source_sha256": "c137b493ec95a6611c11490c9e7b9c408c4fbc4e0f47dec00135fb35fe852ee2",
+  "runs": 43,
+  "full": 43,
+  "counts": {
+    "focus1": 1,
+    "user3": 1,
+    "focus_gui": 1,
+    "target_final": 6,
+    "standard_final": 15,
+    "matrix_final": 12,
+    "reported_final": 5,
+    "user3_repeat1": 1,
+    "user3_repeat2": 1
+  },
+  "expected": {
+    "focus1": 1,
+    "user3": 1,
+    "focus_gui": 1,
+    "target_final": 6,
+    "standard_final": 15,
+    "matrix_final": 12,
+    "reported_final": 5,
+    "user3_repeat1": 1,
+    "user3_repeat2": 1
+  },
+  "standard_mean": 95.384,
+  "baseline_standard_mean": 95.27733333333333,
+  "maps": [
+    {
+      "map": "Map01",
+      "cases": 3,
+      "baseline": 90.86666666666667,
+      "score": 90.70666666666666
+    },
+    {
+      "map": "Map02",
+      "cases": 3,
+      "baseline": 96.66666666666667,
+      "score": 97.17333333333333
+    },
+    {
+      "map": "Map03",
+      "cases": 3,
+      "baseline": 95.52,
+      "score": 96.61333333333333
+    },
+    {
+      "map": "Map04",
+      "cases": 3,
+      "baseline": 97.05333333333333,
+      "score": 96.08
+    },
+    {
+      "map": "Map05",
+      "cases": 3,
+      "baseline": 96.28,
+      "score": 96.34666666666666
+    }
+  ],
+  "required_passed": true
+}
